@@ -1,0 +1,6 @@
+ui_print("~~~~~~Galaxy S Relay 4G CWM Recovery ~~~~~~");
+ui_print("");
+ui_print("");
+ui_print("~~~~~~Flashing new Recovery ~~~~~~");
+package_extract_file("recovery.img", "/dev/block/mmcblk0p18");
+ui_print("~~~~~All done ~~~~~");

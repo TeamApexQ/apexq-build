@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#Cleanup
+rm -f $WORKSPACE/*.zip $WORKSPACE/*.img
+rm -f $OUT/cm*.zip*
+
+#Setup
+OUT=out/target/product/apexqtmo
+cd vendor/cm
+./get-prebuilts
+cd ../..
+
+#CCACHE
+export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
+export USE_CCACHE=1
+export CCACHE_DIR=~/.kk_ccache
+if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "15.0" ]
+then
+	ccache -M 15G
+fi
+
+#Build
+. ./build/envsetup.sh
+if [ $CLEAN = "true" ]; then make clean; fi
+brunch apexqtmo
+if [ "0" -ne "$?" ]; then exit 1; fi
+
+#Archive
+if [! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
+for f in $(ls $OUT/cm-*.zip*)
+do
+	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.zip/g"`
+	ln $f $WORKSPACE/archive/$targetf
+done
+if [ -f $OUT/boot.img ]
+then
+	cp $OUT/boot.img $WORKSPACE/archive
+fi
+if [ -f $OUT/recovery.img ]
+then
+	cp $OUT/recovery.img $WORKSPACE/archive
+	mkdir -p $WORKSPACE/archive/META-INF/com/google/android
+	wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/update-binary -O $WORKSPACE/archive/META-INF/com/google/android/update-binary
+	wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/updater-script -O $WORKSPACE/archive/META-INF/com/google/android/updater-script
+	cd $WORKSPACE/archive
+	zip recovery.zip recovery.img META-INF/com/google/android/*
+	rm -rf META-INF
+fi
+
+#Verify permissions
+chmod -R ugo+r $WORKSPACE/*.zip
+chmod -R ugo+r $WORKSPACE/*.img
