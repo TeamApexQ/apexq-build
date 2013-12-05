@@ -46,7 +46,7 @@ brunch apexqtmo
 if [ "0" -ne "$?" ]; then exit 1; fi
 
 #Archive
-if [! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
+if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 for f in $(ls $OUT/cm-*.zip*)
 do
 	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.zip/g"`
