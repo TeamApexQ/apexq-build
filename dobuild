@@ -3,6 +3,26 @@
 #Cleanup
 rm -f $WORKSPACE/*.zip $WORKSPACE/*.img
 rm -f $OUT/cm*.zip*
+#rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0
+rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/android/hudson
+rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/workspace/*
+
+#confirm existence of required paths
+if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache
+if [ ! -d /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0 ]; then mkdir /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0; fi
+
+#initialize, synchronize, and reset repos.
+cd /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0
+repo init -u git://github.com/CyanogenMod/android.git -b cm-11.0
+if [ ! -d .repo/local_manifests ]; then mkdir .repo/local_manifests; fi
+wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/cm-11.0.xml -O .repo/local_manifests/cm-11.0.xml
+repo sync
+repo forall -c "git reset --hard"
+if [ ! -d /var/lib/jenkins/jobs/apexq-staging-4.4/bin ]; then mkdir /var/lib/jenkins/jobs/apexq-staging-4.4/bin; fi
+
+#gerrit picks
+wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/repopick.py -O /var/lib/jenkins/jobs/apexq-staging-4.4/bin/repopick.py
+python /var/lib/jenkins/jobs/apexq-staging-4.4/bin/repopick.py $GERRIT_CHANGES
 
 #Setup
 OUT=out/target/product/apexqtmo
