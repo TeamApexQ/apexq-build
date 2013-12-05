@@ -1,8 +1,12 @@
 #!/bin/bash
 
+#vars
+export BUILD_NO=$BUILD_NUMBER
+unset BUILD_NUMBER
+
 #Cleanup
 rm -f $WORKSPACE/*.zip $WORKSPACE/*.img
-rm -f $OUT/cm*.zip*
+rm -f /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0/out/target/product/apexqtmo/cm*.zip*
 #rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0
 rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/android/hudson
 rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/workspace/*
@@ -49,7 +53,7 @@ if [ "0" -ne "$?" ]; then exit 1; fi
 if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 for f in $(ls $OUT/cm-*.zip*)
 do
-	targetf=`basename $f | sed "s/.zip$/-${BUILD_NUMBER}.zip/g"`
+	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.zip/g"`
 	ln $f $WORKSPACE/archive/$targetf
 done
 if [ -f $OUT/boot.img ]
