@@ -68,5 +68,4 @@ then
 fi
 
 #Verify permissions
-chmod -R ugo+r $WORKSPACE/*.zip
-chmod -R ugo+r $WORKSPACE/*.img
+chmod -R ugo+r $WORKSPACE/archive
