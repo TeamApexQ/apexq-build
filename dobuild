@@ -8,7 +8,7 @@ rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/android/hudson
 rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/workspace/*
 
 #confirm existence of required paths
-if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache
+if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache; fi
 if [ ! -d /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0 ]; then mkdir /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0; fi
 
 #initialize, synchronize, and reset repos.
