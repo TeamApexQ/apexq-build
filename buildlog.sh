@@ -4,7 +4,7 @@ if [ -z "$CM_BUILD" ]; then
 fi
 
 MYPATH=$(dirname $0)
-export CHANGESPATH=$WORKSPACE/archive/CHANGES.txt
+export CHANGESPATH=$WORKSPACE/CHANGES.txt
 rm $CHANGESPATH 2>/dev/null
 
 prevts=

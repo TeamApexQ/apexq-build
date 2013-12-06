@@ -71,6 +71,7 @@ then
 	zip recovery.zip recovery.img META-INF/com/google/android/*
 	rm -rf META-INF
 fi
+if [ -f $WORKSPACE/CHANGES.txt ]; then mv $WORKSPACE/CHANGES.txt $WORKSPACE/archive/; fi
 
 #Verify permissions
 chmod -R ugo+r $WORKSPACE/archive
