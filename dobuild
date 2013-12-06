@@ -28,6 +28,7 @@ python /var/lib/jenkins/jobs/apexq-staging-4.4/bin/repopick.py $GERRIT_CHANGES
 wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/buildlog.sh -O /var/lib/jenkins/jobs/apexq-staging-4.4/bin/buildlog.sh
 wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/getdates.py -O /var/lib/jenkins/jobs/apexq-staging-4.4/bin/getdates.py
 WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh /var/lib/jenkins/jobs/apexq-staging-4.4/bin/buildlog.sh 2>&1
+if [ -f $WORKSPACE/CHANGES.txt ]; then echo "CHANGES====================="; cat $WORKSPACE/CHANGES.txt; echo "/CHANGES=================="; fi
 
 #Setup
 OUT=out/target/product/apexqtmo
