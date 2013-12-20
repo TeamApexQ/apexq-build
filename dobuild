@@ -46,6 +46,7 @@ then
 fi
 
 #Build
+export WITH_DEXPREOPT=true
 . ./build/envsetup.sh
 if [ $CLEAN = "true" ]; then make clean; fi
 brunch apexqtmo
