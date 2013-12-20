@@ -15,4 +15,11 @@
  <project name="lbdroid/android_vendor_cm" path="vendor/cm" remote="github" revision="cm-11.0" />
  <remove-project name="cyngn/android_vendor_cyngn" />
  <project name="TeamApexQ/android_vendor_bogus" path="vendor/cyngn" remote="github" revision="cm-11.0" />
+ 
+ <remove-project name="CyanogenMod/android_art" />
+ <remove-project name="CyanogenMod/android_dalvik" />
+ <remove-project name="CyanogenMod/android_frameworks_native" />
+ <project name="lbdroid/android_art" path="art" remote="github" revision="cm-11.0" />
+ <project name="lbdroid/android_dalvik" path="dalvik" remote="github" revision="cm-11.0" />
+ <project name="lbdroid/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-11.0" />
 </manifest>
