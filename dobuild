@@ -58,6 +58,20 @@ for f in $(ls $OUT/cm-*.zip*)
 do
 	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
 	ln $f $WORKSPACE/archive/$targetf
+	mkdir $WORKSPACE/archive/unziptmp
+	unzip $f -d $WORKSPACE/archive/unziptmp/
+	for FILE in $WORKSPACE/archive/unziptmp/system/app/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/apk/"` classes.dex; done
+	for FILE in $WORKSPACE/archive/unziptmp/system/priv-app/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/apk/"` classes.dex; done
+	for FILE in $WORKSPACE/archive/unziptmp/system/framework/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/jar/"` classes.dex; done
+	zip -d $f system/app/*
+	zip -d $f system/priv-app/*
+	zip -d $f system/framework/*
+	mkdir system
+	mv $WORKSPACE/archive/unziptmp/system/app system/
+	mv $WORKSPACE/archive/unziptmp/system/priv-app system/
+	mv $WORKSPACE/archive/unziptmp/system/framework system/
+	rm -rf $WORKSPACE/archive/unziptmp
+	zip -g -r $f system/
 done
 if [ -f $OUT/boot.img ]
 then
