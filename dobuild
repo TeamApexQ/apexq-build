@@ -72,6 +72,7 @@ do
 	mv $WORKSPACE/archive/unziptmp/system/framework system/
 	rm -rf $WORKSPACE/archive/unziptmp
 	zip -g -r $f system/
+	rm system -rf
 done
 if [ -f $OUT/boot.img ]
 then
