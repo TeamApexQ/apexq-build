@@ -66,6 +66,7 @@ do
 	zip -d $f system/app/*
 	zip -d $f system/priv-app/*
 	zip -d $f system/framework/*
+	rm -rf system
 	mkdir system
 	mv $WORKSPACE/archive/unziptmp/system/app system/
 	mv $WORKSPACE/archive/unziptmp/system/priv-app system/
