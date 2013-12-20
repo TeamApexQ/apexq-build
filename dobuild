@@ -54,7 +54,7 @@ if [ "0" -ne "$?" ]; then exit 1; fi
 
 #Archive
 if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
-for f in $(ls $OUT/cm-*.zip*)
+for f in $(ls $OUT/cm-*.zip)
 do
 	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
 	ln $f $WORKSPACE/archive/$targetf
@@ -74,6 +74,11 @@ do
 	rm -rf $WORKSPACE/archive/unziptmp
 	zip -g -r $f system/
 	rm system -rf
+done
+for f in $(ls $OUT/cm-*.zip.md5sum)
+do
+	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
+	ln $f $WORKSPACE/archive/$targetf
 done
 if [ -f $OUT/boot.img ]
 then
