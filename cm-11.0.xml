@@ -4,7 +4,7 @@
  <project name="lbdroid/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-11.0" />
- <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0-exp" />
  <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
  <remove-project name="CyanogenMod/android_external_google" />
  <!--project name="lbdroid/android_external_noanalytics" path="external/noanalytics" remote="github" revision="cm-11.0-precompiled" /-->
