@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
- <!--remove-project name="CyanogenMod/android_device_samsung_apexqtmo" /-->
- <remove-project name="CyanogenMod/android_device_samsung_d2-common" />
- <remove-project name="CyanogenMod/android_device_samsung_msm8960-common" />
- <remove-project name="CyanogenMod/android_device_samsung_qcom-common" />
- <remove-project name="CyanogenMod/android_kernel_samsung_d2" />
  <project name="lbdroid/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="cm-11.0" />
