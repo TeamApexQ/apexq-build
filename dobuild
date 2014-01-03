@@ -11,6 +11,7 @@ rm -rf /var/lib/jenkins/jobs/apexq-staging-4.4/workspace/*
 if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache; fi
 if [ ! -d /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0 ]; then mkdir /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0; fi
 if [ ! -d /var/lib/jenkins/jobs/apexq-staging-4.4/bin ]; then mkdir /var/lib/jenkins/jobs/apexq-staging-4.4/bin; fi
+if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 
 #initialize, synchronize, and reset repos.
 cd /var/lib/jenkins/jobs/apexq-staging-4.4/android/cm-11.0
@@ -27,7 +28,8 @@ python /var/lib/jenkins/jobs/apexq-staging-4.4/bin/repopick.py $GERRIT_CHANGES
 #Log
 wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/buildlog.sh -O /var/lib/jenkins/jobs/apexq-staging-4.4/bin/buildlog.sh
 WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh /var/lib/jenkins/jobs/apexq-staging-4.4/bin/buildlog.sh 2>&1
-#if [ -f $WORKSPACE/CHANGES.txt ]; then echo "CHANGES====================="; cat $WORKSPACE/CHANGES.txt; echo "/CHANGES=================="; fi
+if [ -f $WORKSPACE/CHANGES.txt ]; then mv $WORKSPACE/CHANGES.txt $WORKSPACE/archive/; fi
+chmod -R ugo+r $WORKSPACE/archive
 
 #Setup
 OUT=out/target/product/apexqtmo
@@ -52,7 +54,6 @@ brunch apexqtmo
 if [ "0" -ne "$?" ]; then exit 1; fi
 
 #Archive
-if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 for f in $(ls $OUT/cm-*.zip)
 do
 	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
@@ -93,7 +94,6 @@ then
 	zip recovery.zip recovery.img META-INF/com/google/android/*
 	rm -rf META-INF
 fi
-if [ -f $WORKSPACE/CHANGES.txt ]; then mv $WORKSPACE/CHANGES.txt $WORKSPACE/archive/; fi
 
 #Verify permissions
 chmod -R ugo+r $WORKSPACE/archive
