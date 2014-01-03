@@ -23,6 +23,6 @@
  <project name="lbdroid/android_dalvik" path="dalvik" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-11.0" />
  
- <remove-project name="CyanogenMod/android_build" />
- <project name="lbdroid/android_build" path="build" remote="github" revision="cm-11.0" />
+ <!--remove-project name="CyanogenMod/android_build" />
+ <project name="lbdroid/android_build" path="build" remote="github" revision="cm-11.0" /-->
 </manifest>
