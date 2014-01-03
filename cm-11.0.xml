@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
- <remove-project name="CyanogenMod/android_device_samsung_apexqtmo" />
+ <!--remove-project name="CyanogenMod/android_device_samsung_apexqtmo" /-->
  <remove-project name="CyanogenMod/android_device_samsung_d2-common" />
  <remove-project name="CyanogenMod/android_device_samsung_msm8960-common" />
  <remove-project name="CyanogenMod/android_device_samsung_qcom-common" />
