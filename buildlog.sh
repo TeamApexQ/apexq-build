@@ -3,7 +3,7 @@ export CHANGESPATH=$WORKSPACE/CHANGES.txt
 rm $CHANGESPATH 2>/dev/null
 
 prevts=
-for ts in `ls -lt --time-style=+%s /var/lib/jenkins/jobs/apexq-staging-4.4/builds/ | grep drwx | tail -n+1 | cut -c36-45`; do
+for ts in `ls -lt --time-style=+%s /var/lib/jenkins/jobs/apexq-staging-4.4/builds/ | grep drwx | tail -n+1 | cut -c35-45`; do
 
 export ts
 (echo "===================================" | tee >> $CHANGESPATH
