@@ -7,7 +7,7 @@ for ts in `ls -l /var/lib/jenkins/jobs/apexq-staging-4.4/builds/ | grep drwx | c
 
 export ts
 (echo "==================================="
-echo -n "Since ";date -u -d @$ts 
+echo "Since $ts" 
 echo "==================================="
 if [ -z "$prevts" ]; then
   repo forall -c 'L=$(git log --oneline --since $ts -n 1); if [ "n$L" != "n" ]; then echo; echo "   * $REPO_PATH"; git log --oneline --since $ts; fi'
