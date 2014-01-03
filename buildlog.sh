@@ -1,14 +1,9 @@
-if [ -z "$CM_BUILD" ]; then
-  ## Use jenkins' variable
-  CM_BUILD=$LUNCH
-fi
-
 MYPATH=$(dirname $0)
 export CHANGESPATH=$WORKSPACE/CHANGES.txt
 rm $CHANGESPATH 2>/dev/null
 
 prevts=
-for ts in `python2 $MYPATH/getdates.py $CM_BUILD`; do
+for ts in `ls -l /var/lib/jenkins/jobs/apexq-staging-4.4/builds/ | grep drwx | cut -c48-`; do
 
 export ts
 (echo "==================================="
