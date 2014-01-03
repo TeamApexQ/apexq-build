@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+ <!-- Device -->
  <project name="lbdroid/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-11.0" />
- <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0-exp" />
+
+ <!-- Kernel -->
+ <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0" />
+
+ <!-- Blobz -->
  <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
+
+ <!-- Eliminate junk needed by spyware -->
  <remove-project name="CyanogenMod/android_external_google" />
- <!--project name="lbdroid/android_external_noanalytics" path="external/noanalytics" remote="github" revision="cm-11.0-precompiled" /-->
- <!--remove-project name="CyanogenMod/android_packages_apps_CMAccount" /-->
+
+ <!-- Switch to versions that are cleaned of spyware -->
  <remove-project name="CyanogenMod/android_packages_apps_Settings" />
  <project name="lbdroid/android_packages_apps_Settings" path="packages/apps/Settings" remote="github" revision="cm-11.0" />
  <remove-project name="CyanogenMod/android_vendor_cm" />
  <project name="TeamApexQ/android_vendor_cm" path="vendor/cm" remote="github" revision="cm-11.0" />
  <remove-project name="cyngn/android_vendor_cyngn" />
  <project name="TeamApexQ/android_vendor_bogus" path="vendor/cyngn" remote="github" revision="cm-11.0" />
- 
+
+ <!-- These changes allow ALL dalvik cache to be stored on the /cache partition -->
  <remove-project name="CyanogenMod/android_art" />
  <remove-project name="CyanogenMod/android_dalvik" />
  <remove-project name="CyanogenMod/android_frameworks_native" />
  <project name="lbdroid/android_art" path="art" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_dalvik" path="dalvik" remote="github" revision="cm-11.0" />
  <project name="lbdroid/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-11.0" />
- 
- <!--remove-project name="CyanogenMod/android_build" />
- <project name="lbdroid/android_build" path="build" remote="github" revision="cm-11.0" /-->
 </manifest>
