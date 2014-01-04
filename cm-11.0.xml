@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
  <!-- Device -->
- <project name="lbdroid/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="cm-11.0" />
- <project name="lbdroid/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="cm-11.0" />
- <project name="lbdroid/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="cm-11.0" />
- <project name="lbdroid/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-11.0" />
 
  <!-- Kernel -->
  <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0" />
@@ -17,7 +17,7 @@
 
  <!-- Switch to versions that are cleaned of spyware -->
  <remove-project name="CyanogenMod/android_packages_apps_Settings" />
- <project name="lbdroid/android_packages_apps_Settings" path="packages/apps/Settings" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_packages_apps_Settings" path="packages/apps/Settings" remote="github" revision="cm-11.0" />
  <remove-project name="CyanogenMod/android_vendor_cm" />
  <project name="TeamApexQ/android_vendor_cm" path="vendor/cm" remote="github" revision="cm-11.0" />
  <remove-project name="cyngn/android_vendor_cyngn" />
@@ -27,7 +27,7 @@
  <remove-project name="CyanogenMod/android_art" />
  <remove-project name="CyanogenMod/android_dalvik" />
  <remove-project name="CyanogenMod/android_frameworks_native" />
- <project name="lbdroid/android_art" path="art" remote="github" revision="cm-11.0" />
- <project name="lbdroid/android_dalvik" path="dalvik" remote="github" revision="cm-11.0" />
- <project name="lbdroid/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_art" path="art" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_dalvik" path="dalvik" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-11.0" />
 </manifest>
