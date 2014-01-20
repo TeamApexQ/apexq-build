@@ -26,7 +26,7 @@ wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/repopick.py -O /var/li
 python /var/lib/jenkins/jobs/apexq-staging-4.4/bin/repopick.py $GERRIT_CHANGES
 
 #reverts
-$lpath=$PWD
+lpath=$PWD
 for REVERT in $REVERTS; do
 revpath=`echo $REVERT | cut -d\/ -f1 | sed -e "s/_/\//g"`
 cd $revpath
