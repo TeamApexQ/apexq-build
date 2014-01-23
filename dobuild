@@ -14,7 +14,8 @@ if [ ! -d /var/lib/jenkins/jobs/apexq-staging/bin ]; then mkdir /var/lib/jenkins
 if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 
 #get the repo command
-wget http://commondatastorage.googleapis.com/git-repo-downloads/repo -O /var/lib/jenkins/jobs/apexq-staging/bin/repo
+wget http://commondatastorage.googleapis.com/git-repo-downloads/repo -O /var/lib/jenkins/jobs/apexq-staging/bin/repo_t
+cat /var/lib/jenkins/jobs/apexq-staging/bin/repo_t | sed -e "s/\(1, 7, 2\)/\(1, 7, 1\)/" > /var/lib/jenkins/jobs/apexq-staging/bin/repo
 chmod a+x /var/lib/jenkins/jobs/apexq-staging/bin/repo
 
 #initialize, synchronize, and reset repos.
