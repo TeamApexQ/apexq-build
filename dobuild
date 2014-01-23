@@ -84,7 +84,7 @@ do
 	rm -rf $WORKSPACE/archive/unziptmp
 	zip -g -r $f system/
 	rm system -rf
-	zip -P $ZIPPASSCODE $WORKSPACE/archive/$targetf $f
+	zip -P $ZIPPASSCODE -j $WORKSPACE/archive/$targetf $f
 done
 for f in $(ls $OUT/cm-*.zip.md5sum)
 do
