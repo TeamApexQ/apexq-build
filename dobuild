@@ -13,6 +13,10 @@ if [ ! -d /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0 ]; then mkdir -p /
 if [ ! -d /var/lib/jenkins/jobs/apexq-staging/bin ]; then mkdir /var/lib/jenkins/jobs/apexq-staging/bin; fi
 if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 
+#get the repo command
+wget http://commondatastorage.googleapis.com/git-repo-downloads/repo -O /var/lib/jenkins/jobs/apexq-staging/bin/repo
+chmod a+x /var/lib/jenkins/jobs/apexq-staging/bin/repo
+
 #initialize, synchronize, and reset repos.
 cd /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0
 repo init -u git://github.com/CyanogenMod/android.git -b cm-11.0
