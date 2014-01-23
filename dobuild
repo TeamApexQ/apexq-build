@@ -9,7 +9,7 @@ rm -rf /var/lib/jenkins/jobs/apexq-staging/workspace/*
 
 #confirm existence of required paths
 if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache; fi
-if [ ! -d /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0 ]; then mkdir /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0; fi
+if [ ! -d /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0 ]; then mkdir -p /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0; fi
 if [ ! -d /var/lib/jenkins/jobs/apexq-staging/bin ]; then mkdir /var/lib/jenkins/jobs/apexq-staging/bin; fi
 if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
 
