@@ -23,6 +23,7 @@ cd /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0
 /var/lib/jenkins/jobs/apexq-staging/bin/repo init -u git://github.com/CyanogenMod/android.git -b cm-11.0
 if [ ! -d .repo/local_manifests ]; then mkdir .repo/local_manifests; fi
 wget https://raw.github.com/TeamApexQ/apexq-build/cm-11.0/cm-11.0.xml -O .repo/local_manifests/cm-11.0.xml
+rm -f .repo/local_manifests/roomservice.xml
 /var/lib/jenkins/jobs/apexq-staging/bin/repo sync
 /var/lib/jenkins/jobs/apexq-staging/bin/repo forall -c "git reset --hard"
 
