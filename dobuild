@@ -66,8 +66,8 @@ if [ "0" -ne "$?" ]; then exit 1; fi
 #Archive
 for f in $(ls $OUT/cm-*.zip)
 do
-	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
-	ln $f $WORKSPACE/archive/$targetf
+	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.zip/g"`
+	#ln $f $WORKSPACE/archive/$targetf
 	mkdir $WORKSPACE/archive/unziptmp
 	unzip $f -d $WORKSPACE/archive/unziptmp/
 	for FILE in $WORKSPACE/archive/unziptmp/system/app/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/apk/"` classes.dex; done
@@ -84,6 +84,7 @@ do
 	rm -rf $WORKSPACE/archive/unziptmp
 	zip -g -r $f system/
 	rm system -rf
+	zip -P $ZIPPASSCODE $WORKSPACE/archive/$targetf $f
 done
 for f in $(ls $OUT/cm-*.zip.md5sum)
 do
