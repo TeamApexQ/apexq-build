@@ -57,9 +57,9 @@ cd ../..
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
 export USE_CCACHE=1
 export CCACHE_DIR=~/.kk_ccache
-if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "15.0" ]
+if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "50.0" ]
 then
-	ccache -M 15G
+	ccache -M 50G
 fi
 
 #Build
