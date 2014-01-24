@@ -4,7 +4,7 @@ rm $CHANGESPATH 2>/dev/null
 
 i=1
 prevts=
-for ts in `ls -lt --time-style=+%s /var/lib/jenkins/jobs/apexq-staging-4.4/builds/ | grep drwx | cut -c35-45`; do
+for ts in `ls -lt --time-style=+%s /var/lib/jenkins/jobs/apexq-staging/builds/ | grep drwx | cut -c35-45`; do
 
 export ts
 (echo "==================================="
