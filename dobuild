@@ -2,6 +2,7 @@
 
 #Cleanup
 rm -f $WORKSPACE/*.zip $WORKSPACE/*.img
+rm -f $WORKSPACE/archive/*
 rm -f /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0/out/target/product/apexqtmo/cm*.zip*
 #rm -rf /var/lib/jenkins/jobs/apexq-staging/android/cm-11.0
 rm -rf /var/lib/jenkins/jobs/apexq-staging/android/hudson
