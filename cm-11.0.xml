@@ -30,4 +30,8 @@
  <project name="TeamApexQ/android_art" path="art" remote="github" revision="cm-11.0" />
  <project name="TeamApexQ/android_dalvik" path="dalvik" remote="github" revision="cm-11.0" />
  <project name="TeamApexQ/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-11.0" />
+ 
+ <!-- We don't like CM bogus crap -->
+ <remove-project name="CyanogenMod/android_packages_apps_Trebuchet" />
+ 
 </manifest>
