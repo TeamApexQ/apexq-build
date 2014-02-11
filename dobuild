@@ -49,9 +49,11 @@ chmod -R ugo+r $WORKSPACE/archive
 
 #Setup
 OUT=out/target/product/apexqtmo
+if [[ -z $LUNCH ]]; then
 cd vendor/cm
 ./get-prebuilts
 cd ../..
+fi
 
 #CCACHE
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
@@ -66,7 +68,12 @@ fi
 export WITH_DEXPREOPT=true
 . ./build/envsetup.sh
 if [ $CLEAN = "true" ]; then make clean; fi
+if [[ -z $LUNCH ]]; then
 brunch apexqtmo
+else
+lunch $LUNCH
+make
+fi
 if [ "0" -ne "$?" ]; then exit 1; fi
 
 #Archive
