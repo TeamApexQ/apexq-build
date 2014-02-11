@@ -7,7 +7,7 @@
  <project name="TeamApexQ/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-11.0" />
 
  <!-- Kernel -->
- <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0-feb1014" />
+ <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="cm-11.0" />
 
  <!-- Blobz -->
  <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
