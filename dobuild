@@ -77,7 +77,7 @@ fi
 if [ "0" -ne "$?" ]; then exit 1; fi
 
 #Archive
-for f in $(ls $OUT/cm-*.zip)
+for f in $(ls $OUT/cm-*.zip $OUT/omni-*.zip 2>/dev/null)
 do
 	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.zip/g"`
 	#ln $f $WORKSPACE/archive/$targetf
