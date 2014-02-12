@@ -72,7 +72,7 @@ if [[ -z $LUNCH ]]; then
 brunch apexqtmo
 else
 lunch $LUNCH
-make -j8
+make bacon -j8
 fi
 if [ "0" -ne "$?" ]; then exit 1; fi
 
