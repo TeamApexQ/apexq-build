@@ -23,11 +23,11 @@
  <!-- For whatever reason, CM decided to cripple ccache to work only with newer glibc than enterprise linux ships -->
  <!--remove-project name="CyanogenMod/android_prebuilts_misc" />
  <project name="TeamApexQ/android_prebuilts_misc" path="prebuilts/misc" remote="github" revision="cm-11.0" /-->
- <remove-project name="android_hardware_qcom_display-caf" />
+ <!--remove-project name="android_hardware_qcom_display-caf" />
  <project path="hardware/qcom/display-caf" name="android_hardware_qcom_display-caf" remote="omnirom" revision="qcom-4.4_2.7" />
  <remove-project name="android_hardware_qcom_audio-caf" />
  <project path="hardware/qcom/audio-caf" name="android_hardware_qcom_audio-caf" remote="omnirom" revision="qcom-4.4_2.7" />
  <remove-project name="android_hardware_qcom_media-caf" />
- <project path="hardware/qcom/media-caf" name="android_hardware_qcom_media-caf" remote="omnirom" revision="qcom-4.4_2.7" />
+ <project path="hardware/qcom/media-caf" name="android_hardware_qcom_media-caf" remote="omnirom" revision="qcom-4.4_2.7" /-->
  
 </manifest>
