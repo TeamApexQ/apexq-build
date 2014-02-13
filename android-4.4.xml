@@ -23,5 +23,6 @@
  <!-- For whatever reason, CM decided to cripple ccache to work only with newer glibc than enterprise linux ships -->
  <!--remove-project name="CyanogenMod/android_prebuilts_misc" />
  <project name="TeamApexQ/android_prebuilts_misc" path="prebuilts/misc" remote="github" revision="cm-11.0" /-->
- 
+ <remove-project name="android_hardware_qcom_display-caf" />
+ <project name="CyanogenMod/android_hardware_qcom_display-caf" path="hardware/qcom/display-caf" remote="github" revision="cm-11.0" />
 </manifest>
