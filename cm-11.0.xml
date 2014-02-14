@@ -38,4 +38,6 @@
  <remove-project name="CyanogenMod/android_prebuilts_misc" />
  <project name="TeamApexQ/android_prebuilts_misc" path="prebuilts/misc" remote="github" revision="cm-11.0" />
  
+ <remove-project name="CyanogenMod/android_packages_apps_Dialer" />
+ <project name="omnirom/android_packages_apps_Dialer" path="packages/apps/Dialer" remote="github" revision="android-4.4" />
 </manifest>
