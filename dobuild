@@ -32,6 +32,24 @@ $JOB_ROOT/bin/repo forall -c "git reset --hard"
 wget https://raw.github.com/TeamApexQ/apexq-build/aosp/repopick.py -O $JOB_ROOT/bin/repopick.py
 python $JOB_ROOT/bin/repopick.py $GERRIT_CHANGES
 
+#cherries
+if [ ! -z "$CHERRIES" ]; then
+echo "cherry picking..."
+  lpath=$PWD
+  for CHERRY in $CHERRIES; do
+    PROJECT=`echo $CHERRY | cut -d'/' -f2`
+    GITHUBUSER=`echo $CHERRY | cut -d'/' -f1`
+    COMMIT=`echo $CHERRY | cut -d'/' -f4`
+    SUBDIR=`echo $PROJECT | sed 's/android_//g' | sed 's#_#/#g'`
+    echo $PROJECT $GITHUBUSER $COMMIT $SUBDIR
+    cd $SUBDIR
+    git fetch git://github.com/$GITHUBUSER/$PROJECT.git
+    git cherry-pick $COMMIT
+    cd "$lpath"
+  done
+echo "Cherry picking done."
+fi
+
 #reverts
 lpath=$PWD
 for REVERT in $REVERTS; do
