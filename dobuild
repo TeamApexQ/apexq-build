@@ -23,7 +23,7 @@ chmod a+x $JOB_ROOT/bin/repo
 cd $JOB_ROOT/android/$BUILD_ROOT
 $JOB_ROOT/bin/repo init -u $REPO_URI -b $REPO_BRANCH
 if [ ! -d .repo/local_manifests ]; then mkdir .repo/local_manifests; fi
-wget https://raw.github.com/TeamApexQ/apexq-build/aosp/$REPO_BRANCH.xml -O .repo/local_manifests/local.xml
+wget https://raw.github.com/TeamApexQ/apexq-build/aosp/$MANIFEST.xml -O .repo/local_manifests/local.xml
 rm -f .repo/local_manifests/roomservice.xml
 $JOB_ROOT/bin/repo sync
 $JOB_ROOT/bin/repo forall -c "git reset --hard"
