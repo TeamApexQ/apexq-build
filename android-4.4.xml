@@ -9,6 +9,10 @@
  <!-- Kernel -->
  <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="omni-4.4" />
 
+ <!-- SU -->
+ <project name="koush/Superuser" path="external/koush/Superuser" remote="github" revision="master" />
+ <project name="koush/Widgets" path="external/koush/Widgets" remote="github" revision="master" />
+
  <!-- Blobz -->
  <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
 
