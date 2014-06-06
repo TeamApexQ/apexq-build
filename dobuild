@@ -85,6 +85,7 @@ fi
 #Build
 export WITH_DEXPREOPT=true
 . ./build/envsetup.sh
+rm -rf ./system/extras/su
 if [ $CLEAN = "true" ]; then make clean; fi
 if [[ -z $LUNCH ]]; then
 brunch apexqtmo
