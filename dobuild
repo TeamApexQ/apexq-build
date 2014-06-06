@@ -50,6 +50,21 @@ echo "cherry picking..."
 echo "Cherry picking done."
 fi
 
+#patches
+if [ ! -z "$PATCHES" ]; then
+	echo "applying patches..."
+	lpath=$PWD
+	for PATCH in $PATCHES; do
+		cd `echo $PATCH | cut -d'/' -f1 | sed -e "s/_/\//g"`
+		patchfile=`echo $PATCH | cut -d'/' -f2`
+		wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/aosp/patches/$patchfile
+		git am < $patchfile
+		rm $patchfile
+		cd "$lpath"
+	done
+	echo "done patching."
+fi
+
 #reverts
 lpath=$PWD
 for REVERT in $REVERTS; do
