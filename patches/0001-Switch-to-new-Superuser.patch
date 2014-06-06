@@ -34,7 +34,7 @@ index 24ce1fe..bef5763 100644
  LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/res
  LOCAL_RESOURCE_DIR += packages/apps/OmniGears/res
  LOCAL_RESOURCE_DIR += packages/apps/PerformanceControl/res
-+LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/res $(LOCAL_PATH)/../../../external/koush/Widgets/Widgets/res $(LOCAL_PATH)/../../../external/koush/Superuser/Superuser/res
++LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/../../../external/koush/Widgets/Widgets/res $(LOCAL_PATH)/../../../external/koush/Superuser/Superuser/res
  
  LOCAL_ASSET_DIR += packages/apps/PerformanceControl/assets
  
