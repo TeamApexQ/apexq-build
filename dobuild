@@ -130,8 +130,12 @@ do
 	mv $WORKSPACE/archive/unziptmp/system/framework system/
 	rm -rf $WORKSPACE/archive/unziptmp
 	zip -g -r $f system/
+	if [[ -z $ZIPPASSCODE ]]; then
+		mv $f $WORKSPACE/archive/$targetf
+	else
+		zip -P $ZIPPASSCODE -j $WORKSPACE/archive/$targetf $f
+	fi
 	rm system -rf
-	zip -P $ZIPPASSCODE -j $WORKSPACE/archive/$targetf $f
 done
 for f in $(ls $OUT/*.zip.md5sum)
 do
