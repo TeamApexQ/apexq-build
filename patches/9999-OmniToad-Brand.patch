@@ -1,3 +1,13 @@
+From 824a0afb57035da470277330acb98f9aedf904b8 Mon Sep 17 00:00:00 2001
+From: Malcolm Mallardi <mdmallardi@gmail.com>
+Date: Mon, 9 Jun 2014 21:05:21 -0400
+Subject: [PATCH] OmniToad branding
+
+Change-Id: I74de94e4761551eef68fde6578d1f76251c56ee7
+---
+ config/version.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
 diff --git a/config/version.mk b/config/version.mk
 index e2d8d41..37dda28 100644
 --- a/config/version.mk
@@ -18,3 +28,6 @@ index e2d8d41..37dda28 100644
 -    ro.modversion=OmniROM-$(ROM_VERSION) \
 +    ro.modversion=OmniToad-$(ROM_VERSION) \
      ro.omni.version=$(ROM_VERSION)
+-- 
+1.8.3.2
+
