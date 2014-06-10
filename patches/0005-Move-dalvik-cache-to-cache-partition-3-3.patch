@@ -1,0 +1,26 @@
+From 65e38502be33a7f4cad9648b03e7128096c40317 Mon Sep 17 00:00:00 2001
+From: lbdroid <definesinsanity@gmail.com>
+Date: Tue, 10 Jun 2014 10:13:06 -0400
+Subject: [PATCH] Move dalvik-cache to /cache partition 3/3
+
+The /cache partition is largely unused. This will move a few hundred MB of dalvik cache over to /cache to save space on /data.
+---
+ cmds/installd/installd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cmds/installd/installd.h b/cmds/installd/installd.h
+index 5bba9f3..dc7f91e 100644
+--- a/cmds/installd/installd.h
++++ b/cmds/installd/installd.h
+@@ -71,7 +71,7 @@
+ 
+ #define PRIVATE_APP_SUBDIR     "app-private/" // sub-directory under ANDROID_DATA
+ 
+-#define DALVIK_CACHE_PREFIX    "/data/dalvik-cache/"
++#define DALVIK_CACHE_PREFIX    "/cache/dalvik-cache/"
+ #define DALVIK_CACHE_POSTFIX   "/classes.dex"
+ 
+ #define UPDATE_COMMANDS_DIR_PREFIX  "/system/etc/updatecmds/"
+-- 
+1.9.0
+
