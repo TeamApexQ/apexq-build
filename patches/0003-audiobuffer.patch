@@ -1,0 +1,26 @@
+From e55e5ee2ed2e6132c314a283aa8a757ef45ebe03 Mon Sep 17 00:00:00 2001
+From: Malcolm Mallardi <mdmallardi@gmail.com>
+Date: Mon, 9 Jun 2014 20:51:00 -0400
+Subject: [PATCH] Increase audio buffer
+
+Change-Id: I64127881a89cd358cc012e0dbb289e9f69eda42c
+---
+ src/android/AudioPlayer_to_android.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/android/AudioPlayer_to_android.h b/src/android/AudioPlayer_to_android.h
+index 12113b5..825c54d 100644
+--- a/src/android/AudioPlayer_to_android.h
++++ b/src/android/AudioPlayer_to_android.h
+@@ -14,7 +14,7 @@
+  * limitations under the License.
+  */
+ 
+-#define ANDROID_DEFAULT_AUDIOTRACK_BUFFER_SIZE 4096
++#define ANDROID_DEFAULT_AUDIOTRACK_BUFFER_SIZE 16384
+ 
+ /**************************************************************************************************
+  * AudioPlayer lifecycle
+-- 
+1.8.3.2
+
