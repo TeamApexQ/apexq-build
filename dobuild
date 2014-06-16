@@ -142,7 +142,7 @@ do
 	fi
 	rm system -rf
 done
-for f in $(ls $OUT/*.zip.md5sum)
+for f in $(ls $OUT/*.zip.md5sum 2> /dev/null)
 do
 	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
 	ln $f $WORKSPACE/archive/$targetf
