@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#Global Default
+
+if [[ -z $MAKETYPE ]]; then
+  MAKETYPE="bacon"
+fi
+
 #Cleanup
 rm -f $WORKSPACE/*.zip $WORKSPACE/*.img
 rm -f $WORKSPACE/archive/*
@@ -105,7 +111,7 @@ if [[ -z $LUNCH ]]; then
 brunch apexqtmo
 else
 lunch $LUNCH
-nice $NICEOPTS make bacon $MAKEOPTS
+nice $NICEOPTS make $MAKETYPE $MAKEOPTS
 fi
 if [ "0" -ne "$?" ]; then exit 1; fi
 
