@@ -1,0 +1,453 @@
+From fec73d67a4dd007c83932f14af7c966eb9bf36e0 Mon Sep 17 00:00:00 2001
+From: Hendrik Borghorst <hendrikborghorst@gmail.com>
+Date: Fri, 12 Jul 2013 16:27:47 +0200
+Subject: [PATCH] TunnelAudio: Fixes playback with Qualcomm tunnel audio for
+ players which use gapless api
+
+TunnelAudio player in its current stage shows an very odd behavior.
+It plays one song over DSP processor and the next is played with software decoding.
+
+This is because there are two open instances of awesomeplayer at all time.
+At the moment awesomeplayer checks at the creation if DSP processor if free, if not it falls back to software.
+
+This patch fixes that by delaying that check to the actual call of play() so,
+that the awesomeplayer which currently holds the DSP processor can free it. This is also done earlier than before.
+
+At the moment I can only test this patch on an Sony Xperia Z
+and I would really like if someone could help and test it further.
+
+PS2: Disabled delayed codec initialization for HTTPStreaming and fixed VideoSize not notifyed
+PS3: actually added changed files, sorry
+PS4: White spaces fixed
+PS6: Added guard in seek if codecs are initialized, check if tunnel is supported before delaying and
+     if DSP is already in use.
+PS7: Added missing #ifdef
+PS8: Rebased for cm-10.2
+
+PS2(after rebase): fix compilation on other qcom devices
+PS3(after rebase): fix oops
+PS4(after rebase): Fix player sometimes stuck at end of song. Some cleanup.
+
+Change-Id: I1bdb2351aef300778a3375cc06e048dba455121e
+---
+ include/media/stagefright/TunnelPlayer.h     |   2 +
+ media/libstagefright/AwesomePlayer.cpp       | 265 ++++++++++++++++++++++++++-
+ media/libstagefright/TunnelPlayer.cpp        |   5 +
+ media/libstagefright/include/AwesomePlayer.h |   4 +
+ 4 files changed, 267 insertions(+), 9 deletions(-)
+ mode change 100644 => 100755 media/libstagefright/AwesomePlayer.cpp
+ mode change 100644 => 100755 media/libstagefright/TunnelPlayer.cpp
+ mode change 100644 => 100755 media/libstagefright/include/AwesomePlayer.h
+
+diff --git a/include/media/stagefright/TunnelPlayer.h b/include/media/stagefright/TunnelPlayer.h
+index bec2485..74c2f75 100644
+--- a/include/media/stagefright/TunnelPlayer.h
++++ b/include/media/stagefright/TunnelPlayer.h
+@@ -70,6 +70,8 @@ public:
+ 
+     static int mTunnelObjectsAlive;
+     static const int getTunnelObjectsAliveMax();
++    static bool mTunnelObjectEarlyDeletable;
++    static bool mTunnelObjectEarlyDeleted;
+ private:
+     int64_t mPositionTimeMediaUs;
+     int64_t mPositionTimeRealUs;
+diff --git a/media/libstagefright/AwesomePlayer.cpp b/media/libstagefright/AwesomePlayer.cpp
+old mode 100644
+new mode 100755
+index 26f3ca6..3cb7de2
+--- a/media/libstagefright/AwesomePlayer.cpp
++++ b/media/libstagefright/AwesomePlayer.cpp
+@@ -19,7 +19,7 @@
+ 
+ #undef DEBUG_HDCP
+ 
+-//#define LOG_NDEBUG 0
++#define LOG_NDEBUG 0
+ #define LOG_TAG "AwesomePlayer"
+ #define ATRACE_TAG ATRACE_TAG_VIDEO
+ #include <utils/Log.h>
+@@ -248,6 +248,9 @@ AwesomePlayer::AwesomePlayer()
+ #ifdef QCOM_DIRECTTRACK
+     mIsTunnelAudio = false;
+ #endif
++#ifdef USE_TUNNEL_MODE
++    mDelayedInitialization = false;
++#endif
+ }
+ 
+ AwesomePlayer::~AwesomePlayer() {
+@@ -520,6 +523,9 @@ void AwesomePlayer::reset() {
+ }
+ 
+ void AwesomePlayer::reset_l() {
++#ifdef USE_TUNNEL_MODE
++  if( !TunnelPlayer::mTunnelObjectEarlyDeleted ) {
++#endif
+     mVideoRenderingStarted = false;
+     mActiveAudioTrackIndex = -1;
+     mDisplayWidth = 0;
+@@ -619,7 +625,87 @@ void AwesomePlayer::reset_l() {
+ 
+     mBitrate = -1;
+     mLastVideoTimeUs = -1;
++    mFrameDurationUs = kInitFrameDurationUs;
+ 
++#ifdef USE_TUNNEL_MODE
++  } else {
++      ALOGV("Doing late cleanup");
++      mVideoRenderingStarted = false;
++      mActiveAudioTrackIndex = -1;
++      mDisplayWidth = 0;
++      mDisplayHeight = 0;
++
++      if (mDecryptHandle != NULL) {
++              mDrmManagerClient->setPlaybackStatus(mDecryptHandle,
++                      Playback::STOP, 0);
++              mDecryptHandle = NULL;
++              mDrmManagerClient = NULL;
++      }
++
++
++      if (mFlags & PREPARING) {
++          modifyFlags(PREPARE_CANCELLED, SET);
++          if (mConnectingDataSource != NULL) {
++              ALOGI("interrupting the connection process");
++              mConnectingDataSource->disconnect();
++          }
++
++          if (mFlags & PREPARING_CONNECTED) {
++              // We are basically done preparing, we're just buffering
++              // enough data to start playback, we can safely interrupt that.
++              finishAsyncPrepare_l();
++          }
++      }
++
++      while (mFlags & PREPARING) {
++          mPreparedCondition.wait(mLock);
++      }
++
++      cancelPlayerEvents();
++
++      mWVMExtractor.clear();
++      mVideoTrack.clear();
++
++
++      mTimeSource = NULL;
++
++      if (mTextDriver != NULL) {
++          delete mTextDriver;
++          mTextDriver = NULL;
++      }
++
++      mVideoRenderer.clear();
++
++      modifyFlags(PLAYING, CLEAR);
++      printStats();
++      if (mVideoSource != NULL) {
++          shutdownVideoDecoder_l();
++      }
++
++      mDurationUs = -1;
++      modifyFlags(0, ASSIGN);
++      mExtractorFlags = 0;
++      mTimeSourceDeltaUs = 0;
++      mVideoTimeUs = 0;
++
++      mSeeking = NO_SEEK;
++      mSeekNotificationSent = true;
++      mSeekTimeUs = 0;
++
++      mUri.setTo("");
++      mUriHeaders.clear();
++
++      mFileSource.clear();
++
++      mBitrate = -1;
++      mLastVideoTimeUs = -1;
++      mFrameDurationUs = kInitFrameDurationUs;
++
++      TunnelPlayer::mTunnelObjectEarlyDeleted = false;
++      TunnelPlayer::mTunnelObjectEarlyDeletable = false;
++      ALOGV("Finished late cleanup");
++  }
++#endif
+     {
+         Mutex::Autolock autoLock(mStatsLock);
+         mStats.mFd = -1;
+@@ -634,7 +720,6 @@ void AwesomePlayer::reset_l() {
+         mStats.mFlags = 0;
+         mStats.mTracks.clear();
+     }
+-
+     mWatchForAudioSeekComplete = false;
+     mWatchForAudioEOS = false;
+ 
+@@ -897,18 +982,90 @@ void AwesomePlayer::onStreamDone() {
+         }
+     } else {
+         ALOGV("MEDIA_PLAYBACK_COMPLETE");
+-        notifyListener_l(MEDIA_PLAYBACK_COMPLETE);
+ 
+-        pause_l(true /* at eos */);
++#ifdef USE_TUNNEL_MODE
++        // If TunnelPlayer is EOS it is deletable and it should be deleted before notify so that the dsp processsor is free again
++        ALOGV("mIsTunnelAudio=%d, TunnelPlayer::mTunnelObjectEarlyDeletable=%d", mIsTunnelAudio,TunnelPlayer::mTunnelObjectEarlyDeletable);
++        if ( mIsTunnelAudio && TunnelPlayer::mTunnelObjectEarlyDeletable ) {
++            ALOGV("Start early cleanup of tunnel player");
++            pause_l(true /* at eos */);
++            cancelPlayerEvents();
++
++
++            if (mFlags & PLAYING) {
++                uint32_t params = IMediaPlayerService::kBatteryDataTrackDecoder;
++                if ((mAudioSource != NULL) && (mAudioSource != mAudioTrack)) {
++                  params |= IMediaPlayerService::kBatteryDataTrackAudio;
++                }
++                if (mVideoSource != NULL) {
++                  params |= IMediaPlayerService::kBatteryDataTrackVideo;
++                }
++                addBatteryData(params);
++            }
++
++            modifyFlags(AT_EOS, SET);
++
++            cancelPlayerEvents();
++
++            mCachedSource.clear();
++            mAudioTrack.clear();
++            mExtractor.clear();
++
++            mTimeSource = NULL;
++
++
++            delete mAudioPlayer;
++            mAudioPlayer = NULL;
++            TunnelPlayer::mTunnelObjectEarlyDeleted = true;
++
++            mAudioSource.clear();
++            if (mTextDriver != NULL) {
++                delete mTextDriver;
++                mTextDriver = NULL;
++            }
++
++            mVideoRenderer.clear();
++
++            modifyFlags(PLAYING, CLEAR);
++            printStats();
++
++            mDurationUs = -1;
++            modifyFlags(0, ASSIGN);
++            mExtractorFlags = 0;
++            mTimeSourceDeltaUs = 0;
++            mVideoTimeUs = 0;
++
++            mSeeking = NO_SEEK;
++            mSeekNotificationSent = true;
++            mSeekTimeUs = 0;
++
++            // Disable Tunnel Mode Audio
++            if (mIsTunnelAudio) {
++                if(mTunnelAliveAP > 0) {
++                    mTunnelAliveAP--;
++                    ALOGV("mTunnelAliveAP = %d", mTunnelAliveAP);
++                }
++            }
++            mIsTunnelAudio = false;
++            ALOGV("Cleanup finished");
++
++            notifyListener_l(MEDIA_PLAYBACK_COMPLETE);
++        }
++        else
++#endif
++        {
+ 
+         // If audio hasn't completed MEDIA_SEEK_COMPLETE yet,
+         // notify MEDIA_SEEK_COMPLETE to observer immediately for state persistence.
+-        if (mWatchForAudioSeekComplete) {
+-            notifyListener_l(MEDIA_SEEK_COMPLETE);
+-            mWatchForAudioSeekComplete = false;
+-        }
++            if (mWatchForAudioSeekComplete) {
++               notifyListener_l(MEDIA_SEEK_COMPLETE);
++               mWatchForAudioSeekComplete = false;
++            }
+ 
+-        modifyFlags(AT_EOS, SET);
++            pause_l(true /* at eos */);
++
++            modifyFlags(AT_EOS, SET);
++        }
+     }
+ }
+ 
+@@ -949,6 +1106,40 @@ status_t AwesomePlayer::play_l() {
+                 Playback::START, position / 1000);
+     }
+ 
++#ifdef USE_TUNNEL_MODE
++    // Delayed Codec initialization for Tunnel audio
++    if (mDelayedInitialization) {
++        if (mVideoTrack != NULL && mVideoSource == NULL) {
++          ALOGV("Delayed initializing video decoder");
++            status_t err = initVideoDecoder();
++
++            if (err != OK) {
++                abortPrepare(err);
++                return err;
++            }
++        }
++
++        if (mVideoSource == NULL) {
++            notifyListener_l(MEDIA_SET_VIDEO_SIZE, 0, 0);
++        } else {
++            notifyVideoSize_l();
++        }
++
++        //Delay audiocodec init for tunnel audio
++
++        if (mAudioTrack != NULL && mAudioSource == NULL) {
++          ALOGV("Delayed initializing audio decoder");
++            status_t err = initAudioDecoder();
++
++            if (err != OK) {
++                abortPrepare(err);
++                return err;
++            }
++        }
++        mDelayedInitialization = false;
++    }
++#endif
++
+     if (mAudioSource != NULL) {
+         if (mAudioPlayer == NULL) {
+             createAudioPlayer_l();
+@@ -1536,6 +1727,40 @@ status_t AwesomePlayer::seekTo(int64_t timeUs) {
+ }
+ 
+ status_t AwesomePlayer::seekTo_l(int64_t timeUs) {
++#ifdef USE_TUNNEL_MODE
++    if(mDelayedInitialization)
++    {
++      ALOGE("Seeking before delayed initialization, init codecs here!");
++      if (mVideoTrack != NULL && mVideoSource == NULL) {
++          ALOGV("Delayed initializing video decoder");
++            status_t err = initVideoDecoder();
++
++            if (err != OK) {
++                abortPrepare(err);
++                return err;
++            }
++        }
++
++        if (mVideoSource == NULL) {
++            notifyListener_l(MEDIA_SET_VIDEO_SIZE, 0, 0);
++        } else {
++            notifyVideoSize_l();
++        }
++
++        //Delay audiocodec init for tunnel audio
++
++        if (mAudioTrack != NULL && mAudioSource == NULL) {
++          ALOGV("Delayed initializing audio decoder");
++            status_t err = initAudioDecoder();
++
++            if (err != OK) {
++                abortPrepare(err);
++                return err;
++            }
++        }
++        mDelayedInitialization = false;
++    }
++#endif
+     if (mFlags & CACHE_UNDERRUN) {
+         modifyFlags(CACHE_UNDERRUN, CLEAR);
+         play_l();
+@@ -2674,6 +2899,20 @@ void AwesomePlayer::beginPrepareAsync_l() {
+         }
+     }
+ 
++#ifdef USE_TUNNEL_MODE
++    bool isTunnelSupported = true;
++    const char *mime;
++    if(mAudioTrack != NULL) {
++      sp<MetaData> meta = mAudioTrack->getFormat();
++      CHECK(meta->findCString(kKeyMIMEType, &mime));
++
++      isTunnelSupported = inSupportedTunnelFormats(mime);
++    }
++
++    if( isStreamingHTTP() || mTunnelAliveAP < TunnelPlayer::getTunnelObjectsAliveMax() || !isTunnelSupported  ) {
++      ALOGV("Not delaying initialization of codecs");
++      mDelayedInitialization = false;
++#endif
+     if (mVideoTrack != NULL && mVideoSource == NULL) {
+         status_t err = initVideoDecoder();
+ 
+@@ -2683,6 +2922,8 @@ void AwesomePlayer::beginPrepareAsync_l() {
+         }
+     }
+ 
++    //Delay init for tunnel audio
++
+     if (mAudioTrack != NULL && mAudioSource == NULL) {
+         status_t err = initAudioDecoder();
+ 
+@@ -2691,6 +2932,12 @@ void AwesomePlayer::beginPrepareAsync_l() {
+             return;
+         }
+     }
++#ifdef USE_TUNNEL_MODE
++    } else {
++      ALOGV("Delaying initialization of codecs");
++      mDelayedInitialization = true;
++    }
++#endif
+ 
+     modifyFlags(PREPARING_CONNECTED, SET);
+ 
+diff --git a/media/libstagefright/TunnelPlayer.cpp b/media/libstagefright/TunnelPlayer.cpp
+old mode 100644
+new mode 100755
+index 9aacbb6..3b82b4d
+--- a/media/libstagefright/TunnelPlayer.cpp
++++ b/media/libstagefright/TunnelPlayer.cpp
+@@ -53,6 +53,8 @@ static const char   mName[] = "TunnelPlayer";
+ 
+ namespace android {
+ int TunnelPlayer::mTunnelObjectsAlive = 0;
++bool TunnelPlayer::mTunnelObjectEarlyDeletable = false;
++bool TunnelPlayer::mTunnelObjectEarlyDeleted = false;
+ 
+ TunnelPlayer::TunnelPlayer(
+                     const sp<MediaPlayerBase::AudioSink> &audioSink, bool &initCheck,
+@@ -335,6 +337,9 @@ size_t TunnelPlayer::AudioSinkCallback(
+                 //in the case of seek all these flags will be reset
+                 me->mReachedOutputEOS = true;
+                 ALOGV("postAudioEOS mSeeking %d", me->mSeeking);
++                if (getTunnelObjectsAliveMax() <= 1) {
++                    mTunnelObjectEarlyDeletable = true;
++                }
+                 me->mObserver->postAudioEOS(0);
+             }else {
+                 ALOGV("postAudioEOS ignored since %d", me->mSeeking);
+diff --git a/media/libstagefright/include/AwesomePlayer.h b/media/libstagefright/include/AwesomePlayer.h
+old mode 100644
+new mode 100755
+index 69d104c..9ba99e7
+--- a/media/libstagefright/include/AwesomePlayer.h
++++ b/media/libstagefright/include/AwesomePlayer.h
+@@ -210,6 +210,10 @@ private:
+     static int mTunnelAliveAP;
+ #endif
+ 
++#ifdef USE_TUNNEL_MODE
++    bool mDelayedInitialization;
++#endif
++
+     sp<TimedEventQueue::Event> mVideoEvent;
+     bool mVideoEventPending;
+     sp<TimedEventQueue::Event> mStreamDoneEvent;
+-- 
+1.8.3.1
+
