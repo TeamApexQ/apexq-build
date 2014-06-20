@@ -91,7 +91,7 @@ index 26f3ca6..3cb7de2
  
      mBitrate = -1;
      mLastVideoTimeUs = -1;
-+    mFrameDurationUs = kInitFrameDurationUs;
++    //mFrameDurationUs = kInitFrameDurationUs;
  
 +#ifdef USE_TUNNEL_MODE
 +  } else {
@@ -143,7 +143,7 @@ index 26f3ca6..3cb7de2
 +      mVideoRenderer.clear();
 +
 +      modifyFlags(PLAYING, CLEAR);
-+      printStats();
++      //printStats();
 +      if (mVideoSource != NULL) {
 +          shutdownVideoDecoder_l();
 +      }
@@ -165,7 +165,7 @@ index 26f3ca6..3cb7de2
 +
 +      mBitrate = -1;
 +      mLastVideoTimeUs = -1;
-+      mFrameDurationUs = kInitFrameDurationUs;
++      //mFrameDurationUs = kInitFrameDurationUs;
 +
 +      TunnelPlayer::mTunnelObjectEarlyDeleted = false;
 +      TunnelPlayer::mTunnelObjectEarlyDeletable = false;
@@ -234,7 +234,7 @@ index 26f3ca6..3cb7de2
 +            mVideoRenderer.clear();
 +
 +            modifyFlags(PLAYING, CLEAR);
-+            printStats();
++            //printStats();
 +
 +            mDurationUs = -1;
 +            modifyFlags(0, ASSIGN);
