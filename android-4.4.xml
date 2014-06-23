@@ -15,4 +15,7 @@
 
  <!-- Blobz -->
  <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
+ 
+ <remove-project name="omnirom/android_hardware_qcom_audio" />
+ <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="android-4.4" />
 </manifest>
