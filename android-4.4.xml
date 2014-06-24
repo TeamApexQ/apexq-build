@@ -19,5 +19,7 @@
  <remove-project name="android_hardware_qcom_audio" />
  <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="android-4.4" />
  <remove-project name="android_hardware_qcom_audio-caf" />
- <project name="lbdroid/android_hardware_qcom_audio-caf" path="hardware/qcom/audio-caf" remote="github" revision="cm-11.0" />
+ <project name="CyanogenMod/android_hardware_qcom_audio-caf" path="hardware/qcom/audio-caf" remote="github" revision="cm-11.0" />
+ <remove-project name="android_hardware_libhardware" />
+ <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-11.0" />
 </manifest>
