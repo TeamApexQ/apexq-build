@@ -18,4 +18,6 @@
  
  <remove-project name="android_hardware_qcom_audio" />
  <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="android-4.4" />
+ <remove-project name="android_hardware_qcom_audio-caf" />
+ <project name="TeamApexQ/android_hardware_qcom_audio-caf" path="hardware/qcom/audio-caf" remote="github" revision="android-4.4" />
 </manifest>
