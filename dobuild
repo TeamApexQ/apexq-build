@@ -29,14 +29,14 @@ chmod a+x $JOB_ROOT/bin/repo
 cd $JOB_ROOT/android/$BUILD_ROOT
 $JOB_ROOT/bin/repo init -u $REPO_URI -b $REPO_BRANCH
 if [ ! -d .repo/local_manifests ]; then mkdir .repo/local_manifests; fi
-wget https://raw.github.com/TeamApexQ/apexq-build/aosp/$MANIFEST.xml -O .repo/local_manifests/local.xml
+wget https://raw.github.com/TeamApexQ/apexq-build/aosp-newaudio/$MANIFEST.xml -O .repo/local_manifests/local.xml
 rm -f .repo/local_manifests/roomservice.xml
 $JOB_ROOT/bin/repo forall -c "git am --abort" >/dev/null 2>&1
 $JOB_ROOT/bin/repo forall -c "git reset --hard"
 $JOB_ROOT/bin/repo sync
 
 #gerrit picks
-wget https://raw.github.com/TeamApexQ/apexq-build/aosp/repopick.py -O $JOB_ROOT/bin/repopick.py
+wget https://raw.github.com/TeamApexQ/apexq-build/aosp-newaudio/repopick.py -O $JOB_ROOT/bin/repopick.py
 python $JOB_ROOT/bin/repopick.py $GERRIT_CHANGES
 
 #cherries
@@ -64,7 +64,7 @@ if [ ! -z "$PATCHES" ]; then
 	for PATCH in $PATCHES; do
 		cd `echo $PATCH | cut -d'/' -f1 | sed -e "s/_/\//g"`
 		patchfile=`echo $PATCH | cut -d'/' -f2`
-		wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/aosp/patches/$patchfile
+		wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/aosp-newaudio/patches/$patchfile
 		git am < $patchfile
 		rm $patchfile
 		cd "$lpath"
@@ -82,7 +82,7 @@ cd "$lpath"
 done
 
 #Log
-wget https://raw.github.com/TeamApexQ/apexq-build/aosp/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
+wget https://raw.github.com/TeamApexQ/apexq-build/aosp-newaudio/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
 WORKSPACE=$WORKSPACE sh $JOB_ROOT/bin/buildlog.sh 2>&1
 if [ -f $WORKSPACE/CHANGES.txt ]; then mv $WORKSPACE/CHANGES.txt $WORKSPACE/archive/; fi
 chmod -R ugo+r $WORKSPACE/archive
