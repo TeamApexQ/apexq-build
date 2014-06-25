@@ -151,6 +151,14 @@ done
 if [ -f $OUT/boot.img ]
 then
 	cp $OUT/boot.img $WORKSPACE/archive
+	mkdir -p $WORKSPACE/archive/META-INF/com/google/android
+	wget https://raw.github.com/TeamApexQ/apexq-build/aosp/update-binary -O $WORKSPACE/archive/META-INF/com/google/android/update-binary
+	wget https://raw.github.com/TeamApexQ/apexq-build/aosp/updater-script -O $WORKSPACE/archive/META-INF/com/google/android/updater-script-tmp
+	cat $WORKSPACE/archive/META-INF/com/google/android/updater-script-tmp | sed -e "s/CWM Recovery/Boot/" | sed -e "s/Recovery/Boot/" | sed -e "s/recovery/boot/" | sed -e "s/mmcblk0p18/mmcblk0p7/" > $WORKSPACE/archive/META-INF/com/google/android/updater-script
+	rm -f $WORKSPACE/archive/META-INF/com/google/android/updater-script-tmp
+	cd $WORKSPACE/archive
+	zip boot.zip boot.img META-INF/com/google/android/*
+	rm -rf META-INF
 fi
 if [ -f $OUT/recovery.img ]
 then
