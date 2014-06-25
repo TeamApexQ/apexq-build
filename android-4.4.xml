@@ -19,5 +19,5 @@
  <remove-project name="android_hardware_qcom_audio" />
  <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="android-4.4" />
  <remove-project name="android_hardware_libhardware_legacy" />
- <project name="TeamApexq/android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="github" revision="cm-11.0" />
+ <project name="TeamApexq/android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="github" revision="android-4.4" />
 </manifest>
