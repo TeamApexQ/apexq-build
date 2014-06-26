@@ -29,8 +29,8 @@
  <!--remove-project name="android_hardware_qcom_display-caf" /-->
  <project path="hardware/qcom/display-caf" name="android_hardware_qcom_display-caf" remote="omnirom" revision="qcom-4.4_2.7" />
  <!--remove-project name="android_hardware_qcom_audio-caf" /-->
- <project path="hardware/qcom/audio-caf" name="android_hardware_qcom_audio-caf" remote="omnirom" revision="qcom-4.4_2.7" />
+ <!--project path="hardware/qcom/audio-caf" name="android_hardware_qcom_audio-caf" remote="omnirom" revision="qcom-4.4_2.7" /-->
  <!--remove-project name="android_hardware_qcom_media-caf" /-->
- <project path="hardware/qcom/media-caf" name="android_hardware_qcom_media-caf" remote="omnirom" revision="qcom-4.4_2.7" />
+ <!--project path="hardware/qcom/media-caf" name="android_hardware_qcom_media-caf" remote="omnirom" revision="qcom-4.4_2.7" /-->
  
 </manifest>
