@@ -2,7 +2,7 @@
 
 #Global Default
 
-BUILD_BRANCH="aosp"
+BUILD_BRANCH="aosp-newaudio"
 
 if [[ -z $MAKETYPE ]]; then
   MAKETYPE="bacon"
