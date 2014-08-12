@@ -14,5 +14,5 @@
  <project name="koush/Widgets" path="external/koush/Widgets" remote="github" revision="master" />
 
  <!-- Blobz -->
- <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
 </manifest>
