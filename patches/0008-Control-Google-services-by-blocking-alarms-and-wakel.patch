@@ -1,0 +1,185 @@
+From f8a3a6ee393f2de7a6bb4b87d0beb5ff172c8f04 Mon Sep 17 00:00:00 2001
+From: lbdroid <definesinsanity@gmail.com>
+Date: Mon, 15 Sep 2014 14:26:31 -0400
+Subject: [PATCH] Control Google services by blocking alarms and wakelocks
+
+It has been observed that google services create some unfortunate wakelocks that pretty much prevent any device from getting to deep sleep. Network Locations Provider (nlp) wakelock is apparently used for keeping track of the device's location (low accuracy), but renewing the low accuracy location every 5 seconds is WAY too frequent. Frankly, when the device is asleep, there is really not much use in keeping a frequently updated low accuracy location. If you need to keep a log of your location, then create another process to frequently wake up the device and renew the location. This will make sure that wakelock is never created, thus nlp can only obtain the device's location when the device is awake as a result of some other process (like the screen being on). We also block SystemUpdate from obtaining a wakelock -- it perpetually tries to pull in a system update that does not exist.
+
+We also block nlp from creating alarms to wake the device.
+
+Alarms and Wakelocks are blocked based on lists provided via system properties.
+persist.toad.alarm.block
+persist.toad.wakelock.block
+
+We hardcode a default set into frameworks equivalent to setting properties as follows;
+
+persist.toad.alarm.block=com.google.android.gms.nlp.ALARM_WAKEUP_LOCATOR,com.google.android.gms.nlp.ALARM_WAKEUP_BURST_COLLECTION_TRIGGER
+persist.toad.wakelock.block=com.google.android.gms/NlpWakeLock,com.google.android.gms/NlpCollectorWakeLock,com.google.android.gms/SystemUpdateService
+
+This list can be customized by adding lines to /system/build.prop.
+The values to be added can be found via "logcat | grep ToadPiss"
+
+The list is a comma-separated string with no spaces or other punctuation added. If you use a custom string, it must contain the default values as well as new custom values, or only the new values will be retained.
+---
+ .../com/android/server/AlarmManagerService.java    | 60 ++++++++++++----------
+ .../android/server/power/PowerManagerService.java  | 57 ++++++++++----------
+ 2 files changed, 65 insertions(+), 52 deletions(-)
+
+diff --git a/services/java/com/android/server/AlarmManagerService.java b/services/java/com/android/server/AlarmManagerService.java
+index 5ae9a6d..dd150b8 100644
+--- a/services/java/com/android/server/AlarmManagerService.java
++++ b/services/java/com/android/server/AlarmManagerService.java
+@@ -41,6 +41,7 @@ import android.text.TextUtils;
+ import android.util.Pair;
+ import android.util.Slog;
+ import android.util.TimeUtils;
++import android.util.Log;
+ 
+ import java.io.ByteArrayOutputStream;
+ import java.io.FileDescriptor;
+@@ -573,37 +574,44 @@ class AlarmManagerService extends IAlarmManager.Stub {
+     private void setImplLocked(int type, long when, long whenElapsed, long windowLength,
+             long maxWhen, long interval, PendingIntent operation, boolean isStandalone,
+             boolean doValidate, WorkSource workSource) {
+-        Alarm a = new Alarm(type, when, whenElapsed, windowLength, maxWhen, interval,
+-                operation, workSource);
+-        removeLocked(operation);
+-
+-        int whichBatch = (isStandalone) ? -1 : attemptCoalesceLocked(whenElapsed, maxWhen);
+-        if (whichBatch < 0) {
+-            Batch batch = new Batch(a);
+-            batch.standalone = isStandalone;
+-            addBatchLocked(mAlarmBatches, batch);
+-        } else {
+-            Batch batch = mAlarmBatches.get(whichBatch);
+-            if (batch.add(a)) {
+-                // The start time of this batch advanced, so batch ordering may
+-                // have just been broken.  Move it to where it now belongs.
+-                mAlarmBatches.remove(whichBatch);
++        String act=null;
++        act = operation.getIntent().getAction();
++        if (act == null || !SystemProperties.get("persist.toad.alarm.block","com.google.android.gms.nlp.ALARM_WAKEUP_LOCATOR,com.google.android.gms.nlp.ALARM_WAKEUP_BURST_COLLECTION_TRIGGER").contains(act)){
++            Log.d("ToadPiss","setImplLocked: "+act);
++            Alarm a = new Alarm(type, when, whenElapsed, windowLength, maxWhen, interval,
++                    operation, workSource);
++            removeLocked(operation);
++
++            int whichBatch = (isStandalone) ? -1 : attemptCoalesceLocked(whenElapsed, maxWhen);
++            if (whichBatch < 0) {
++                Batch batch = new Batch(a);
++                batch.standalone = isStandalone;
+                 addBatchLocked(mAlarmBatches, batch);
++            } else {
++                Batch batch = mAlarmBatches.get(whichBatch);
++                if (batch.add(a)) {
++                    // The start time of this batch advanced, so batch ordering may
++                    // have just been broken.  Move it to where it now belongs.
++                    mAlarmBatches.remove(whichBatch);
++                    addBatchLocked(mAlarmBatches, batch);
++                }
+             }
+-        }
+ 
+-        if (DEBUG_VALIDATE) {
+-            if (doValidate && !validateConsistencyLocked()) {
+-                Slog.v(TAG, "Tipping-point operation: type=" + type + " when=" + when
+-                        + " when(hex)=" + Long.toHexString(when)
+-                        + " whenElapsed=" + whenElapsed + " maxWhen=" + maxWhen
+-                        + " interval=" + interval + " op=" + operation
+-                        + " standalone=" + isStandalone);
+-                rebatchAllAlarmsLocked(false);
++            if (DEBUG_VALIDATE) {
++                if (doValidate && !validateConsistencyLocked()) {
++                    Slog.v(TAG, "Tipping-point operation: type=" + type + " when=" + when
++                            + " when(hex)=" + Long.toHexString(when)
++                            + " whenElapsed=" + whenElapsed + " maxWhen=" + maxWhen
++                            + " interval=" + interval + " op=" + operation
++                            + " standalone=" + isStandalone);
++                    rebatchAllAlarmsLocked(false);
++                }
+             }
+-        }
+ 
+-        rescheduleKernelAlarmsLocked();
++            rescheduleKernelAlarmsLocked();
++        } else {
++            Log.d("ToadPiss","Alarm setImplLocked BLOCKED: "+act);
++        }
+     }
+ 
+     private void logBatchesLocked() {
+diff --git a/services/java/com/android/server/power/PowerManagerService.java b/services/java/com/android/server/power/PowerManagerService.java
+index eb596c1..ceea059 100644
+--- a/services/java/com/android/server/power/PowerManagerService.java
++++ b/services/java/com/android/server/power/PowerManagerService.java
+@@ -648,36 +648,41 @@ public final class PowerManagerService extends IPowerManager.Stub
+     private void acquireWakeLockInternal(IBinder lock, int flags, String tag, String packageName,
+             WorkSource ws, int uid, int pid) {
+         synchronized (mLock) {
+-            if (DEBUG_SPEW) {
+-                Slog.d(TAG, "acquireWakeLockInternal: lock=" + Objects.hashCode(lock)
+-                        + ", flags=0x" + Integer.toHexString(flags)
+-                        + ", tag=\"" + tag + "\", ws=" + ws + ", uid=" + uid + ", pid=" + pid);
+-            }
++            if (tag == null || !SystemProperties.get("persist.toad.wakelock.block","com.google.android.gms/NlpWakeLock,com.google.android.gms/NlpCollectorWakeLock,com.google.android.gms/SystemUpdateService").contains(packageName+"/"+tag)){
++                Log.d("ToadPiss","Wakelock acquisition: "+packageName+"/"+tag);
++                if (DEBUG_SPEW) {
++                        Slog.d(TAG, "acquireWakeLockInternal: lock=" + Objects.hashCode(lock)
++                                + ", flags=0x" + Integer.toHexString(flags)
++                                + ", tag=\"" + tag + "\", ws=" + ws + ", uid=" + uid + ", pid=" + pid);
++                }
+ 
+-            WakeLock wakeLock;
+-            int index = findWakeLockIndexLocked(lock);
+-            if (index >= 0) {
+-                wakeLock = mWakeLocks.get(index);
+-                if (!wakeLock.hasSameProperties(flags, tag, ws, uid, pid)) {
+-                    // Update existing wake lock.  This shouldn't happen but is harmless.
+-                    notifyWakeLockReleasedLocked(wakeLock);
+-                    wakeLock.updateProperties(flags, tag, packageName, ws, uid, pid);
+-                    notifyWakeLockAcquiredLocked(wakeLock);
++                WakeLock wakeLock;
++                int index = findWakeLockIndexLocked(lock);
++                if (index >= 0) {
++                        wakeLock = mWakeLocks.get(index);
++                        if (!wakeLock.hasSameProperties(flags, tag, ws, uid, pid)) {
++                            // Update existing wake lock.  This shouldn't happen but is harmless.
++                        notifyWakeLockReleasedLocked(wakeLock);
++                        wakeLock.updateProperties(flags, tag, packageName, ws, uid, pid);
++                        notifyWakeLockAcquiredLocked(wakeLock);
++                        }
++                } else {
++                        wakeLock = new WakeLock(lock, flags, tag, packageName, ws, uid, pid);
++                        try {
++                                lock.linkToDeath(wakeLock, 0);
++                        } catch (RemoteException ex) {
++                                throw new IllegalArgumentException("Wake lock is already dead.");
++                        }
++                        notifyWakeLockAcquiredLocked(wakeLock);
++                        mWakeLocks.add(wakeLock);
+                 }
++
++                applyWakeLockFlagsOnAcquireLocked(wakeLock);
++                mDirty |= DIRTY_WAKE_LOCKS;
++                updatePowerStateLocked();
+             } else {
+-                wakeLock = new WakeLock(lock, flags, tag, packageName, ws, uid, pid);
+-                try {
+-                    lock.linkToDeath(wakeLock, 0);
+-                } catch (RemoteException ex) {
+-                    throw new IllegalArgumentException("Wake lock is already dead.");
+-                }
+-                notifyWakeLockAcquiredLocked(wakeLock);
+-                mWakeLocks.add(wakeLock);
++                Log.d("ToadPiss","Wakelock acquisition BLOCKED: "+packageName+"/"+tag);
+             }
+-
+-            applyWakeLockFlagsOnAcquireLocked(wakeLock);
+-            mDirty |= DIRTY_WAKE_LOCKS;
+-            updatePowerStateLocked();
+         }
+     }
+ 
+-- 
+1.9.0
+
