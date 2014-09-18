@@ -1,0 +1,33 @@
+From db1637f5614ffc8cf0afcbdebcca74eb2d16a2ad Mon Sep 17 00:00:00 2001
+From: Dave Daynard <nardholio@gmail.com>
+Date: Sat, 21 Dec 2013 19:34:44 -0500
+Subject: [PATCH] Always show band 0
+
+None of the phones I tested ever displayed Automatic band selection as a
+choice, probably because no baseband is going to report it supports
+mythical band 0. Make sure it is always displayed.
+
+Change-Id: I5082b04ee63a2916941fd1db40762fa990d59583
+---
+ src/com/android/settings/BandMode.java | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/settings/BandMode.java b/src/com/android/settings/BandMode.java
+index d69d054..2c636ec 100644
+--- a/src/com/android/settings/BandMode.java
++++ b/src/com/android/settings/BandMode.java
+@@ -154,7 +154,10 @@ public class BandMode extends Activity {
+ 
+         if (result.result != null) {
+             int bands[] = (int[])result.result;
+-
++            //Always show Band 0, ie Automatic
++            item = new BandListItem(0);
++            mBandListAdapter.add(item);
++            if (DBG) log("Add " + item.toString());
+             for (int i=0; i<bands.length; i++) {
+                 item = new BandListItem(bands[i]);
+                 mBandListAdapter.add(item);
+-- 
+1.8.3.1
+
