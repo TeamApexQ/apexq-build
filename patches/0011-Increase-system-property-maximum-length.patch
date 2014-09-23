@@ -1,0 +1,26 @@
+From 712faaedb3774d7b030b02afe79b492683e9c438 Mon Sep 17 00:00:00 2001
+From: lbdroid <definesinsanity@gmail.com>
+Date: Tue, 23 Sep 2014 17:40:49 -0400
+Subject: [PATCH] Increase system property maximum length
+
+1024 bytes
+---
+ core/java/android/os/SystemProperties.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/java/android/os/SystemProperties.java b/core/java/android/os/SystemProperties.java
+index 156600e..29a7d22 100644
+--- a/core/java/android/os/SystemProperties.java
++++ b/core/java/android/os/SystemProperties.java
+@@ -30,7 +30,7 @@ import android.util.Log;
+ public class SystemProperties
+ {
+     public static final int PROP_NAME_MAX = 31;
+-    public static final int PROP_VALUE_MAX = 91;
++    public static final int PROP_VALUE_MAX = 1024;
+ 
+     private static final ArrayList<Runnable> sChangeCallbacks = new ArrayList<Runnable>();
+ 
+-- 
+1.8.3.1
+
