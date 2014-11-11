@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
  <!-- Device -->
- <project name="TeamApexQ/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="omni-4.4" />
- <project name="TeamApexQ/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="omni-4.4" />
- <project name="TeamApexQ/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="omni-4.4" />
- <project name="TeamApexQ/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="omni-4.4" />
+ <project name="TeamApexQ/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="omni-5.0" />
+ <project name="TeamApexQ/android_device_samsung_d2-common" path="device/samsung/d2-common" remote="github" revision="omni-5.0" />
+ <project name="TeamApexQ/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="omni-5.0" />
+ <project name="TeamApexQ/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="omni-5.0" />
 
  <!-- Kernel -->
  <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="omni-4.4" />
