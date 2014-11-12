@@ -17,8 +17,8 @@
  <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
  
  <!-- Custom media-caf disables dashplayer, which doesn't build at the moment -->
- <remove-project name="android_hardware_qcom_media-caf" />
- <project name="lbdroid/android_hardware_qcom_media-caf" path="hardware/qcom/media-caf" remote="github" revision="android-5.0" />
+ <remove-project name="android_hardware_qcom_media" />
+ <project name="lbdroid/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="android-5.0" />
  
  <remove-project name="android_hardware_libhardware_legacy" />
  <project name="CyanogenMod/android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="github" revision="cm-12.0" />
