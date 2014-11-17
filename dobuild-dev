@@ -1,0 +1,177 @@
+#!/bin/bash
+
+#Global Default
+
+BUILD_BRANCH="aosp"
+
+if [[ -z $MAKETYPE ]]; then
+  MAKETYPE="bacon"
+fi
+
+#Cleanup
+rm -f $WORKSPACE/*.zip $WORKSPACE/*.img
+rm -f $WORKSPACE/archive/*
+rm -f $JOB_ROOT/android/$BUILD_ROOT/out/target/product/apexqtmo/*.zip*
+#rm -rf $JOB_ROOT/android/$BUILD_ROOT
+rm -rf $JOB_ROOT/android/hudson
+rm -rf $JOB_ROOT/workspace/*
+
+#confirm existence of required paths
+if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache; fi
+if [ ! -d $JOB_ROOT/android/$BUILD_ROOT ]; then mkdir -p $JOB_ROOT/android/$BUILD_ROOT; fi
+if [ ! -d $JOB_ROOT/bin ]; then mkdir $JOB_ROOT/bin; fi
+if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
+
+#get the repo command
+wget http://commondatastorage.googleapis.com/git-repo-downloads/repo -O $JOB_ROOT/bin/repo_t
+cat $JOB_ROOT/bin/repo_t | sed -e "s/\(1, 7, 2\)/\(1, 7, 1\)/" > $JOB_ROOT/bin/repo
+chmod a+x $JOB_ROOT/bin/repo
+
+#initialize, synchronize, and reset repos.
+cd $JOB_ROOT/android/$BUILD_ROOT
+$JOB_ROOT/bin/repo init -u $REPO_URI -b $REPO_BRANCH
+if [ ! -d .repo/local_manifests ]; then mkdir .repo/local_manifests; fi
+wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/$MANIFEST.xml -O .repo/local_manifests/local.xml
+rm -f .repo/local_manifests/roomservice.xml
+$JOB_ROOT/bin/repo forall -c "git am --abort" >/dev/null 2>&1
+$JOB_ROOT/bin/repo forall -c "git reset --hard"
+$JOB_ROOT/bin/repo sync
+
+#gerrit picks
+wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/repopick.py -O $JOB_ROOT/bin/repopick.py
+python $JOB_ROOT/bin/repopick.py $GERRIT_CHANGES
+
+#cherries
+if [ ! -z "$CHERRIES" ]; then
+echo "cherry picking..."
+  lpath=$PWD
+  for CHERRY in $CHERRIES; do
+    PROJECT=`echo $CHERRY | cut -d'/' -f2`
+    GITHUBUSER=`echo $CHERRY | cut -d'/' -f1`
+    COMMIT=`echo $CHERRY | cut -d'/' -f4`
+    SUBDIR=`echo $PROJECT | sed 's/android_//g' | sed 's#_#/#g'`
+    echo $PROJECT $GITHUBUSER $COMMIT $SUBDIR
+    cd $SUBDIR
+    git fetch git://github.com/$GITHUBUSER/$PROJECT.git
+    git cherry-pick $COMMIT
+    cd "$lpath"
+  done
+echo "Cherry picking done."
+fi
+
+#patches
+if [ ! -z "$PATCHES" ]; then
+	echo "applying patches..."
+	lpath=$PWD
+	for PATCH in $PATCHES; do
+		cd `echo $PATCH | cut -d'/' -f1 | sed -e "s/_/\//g"`
+		patchfile=`echo $PATCH | cut -d'/' -f2`
+		wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/$BUILD_BRANCH/patches/$patchfile
+		git am < $patchfile
+		rm $patchfile
+		cd "$lpath"
+	done
+	echo "done patching."
+fi
+
+#reverts
+lpath=$PWD
+for REVERT in $REVERTS; do
+revpath=`echo $REVERT | cut -d\/ -f1 | sed -e "s/_/\//g"`
+cd $revpath
+git revert --no-edit `echo $REVERT | cut -d\/ -f2` `echo $REVERT | cut -d\/ -f3`
+cd "$lpath"
+done
+
+#Log
+wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
+WORKSPACE=$WORKSPACE sh $JOB_ROOT/bin/buildlog.sh 2>&1
+if [ -f $WORKSPACE/CHANGES.txt ]; then mv $WORKSPACE/CHANGES.txt $WORKSPACE/archive/; fi
+chmod -R ugo+r $WORKSPACE/archive
+
+#Setup
+OUT=out/target/product/apexqtmo
+if [[ -z $LUNCH ]]; then
+cd vendor/cm
+./get-prebuilts
+cd ../..
+fi
+
+#CCACHE
+export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
+export USE_CCACHE=1
+export CCACHE_DIR=~/.kk_ccache
+if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "50.0" ]
+then
+	ccache -M 50G
+fi
+
+#Build
+export WITH_DEXPREOPT=true
+. ./build/envsetup.sh
+if [ $CLEAN = "true" ]; then make clean; fi
+if [[ -z $LUNCH ]]; then
+brunch apexqtmo
+else
+lunch $LUNCH
+nice $NICEOPTS make $MAKETYPE $MAKEOPTS
+fi
+if [ "0" -ne "$?" ]; then exit 1; fi
+
+#Archive
+for f in $(ls $OUT/cm-*.zip $OUT/omni-*.zip 2>/dev/null)
+do
+	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.zip/g"`
+	#ln $f $WORKSPACE/archive/$targetf
+#	mkdir $WORKSPACE/archive/unziptmp
+#	unzip $f -d $WORKSPACE/archive/unziptmp/
+#	for FILE in $WORKSPACE/archive/unziptmp/system/app/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/apk/"` classes.dex; done
+#	for FILE in $WORKSPACE/archive/unziptmp/system/priv-app/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/apk/"` classes.dex; done
+#	for FILE in $WORKSPACE/archive/unziptmp/system/framework/*.odex; do zip -d `echo "$FILE" | sed -e "s/odex/jar/"` classes.dex; done
+#	zip -d $f system/app/*
+#	zip -d $f system/priv-app/*
+#	zip -d $f system/framework/*
+#	rm -rf system
+#	mkdir system
+#	mv $WORKSPACE/archive/unziptmp/system/app system/
+#	mv $WORKSPACE/archive/unziptmp/system/priv-app system/
+#	mv $WORKSPACE/archive/unziptmp/system/framework system/
+#	rm -rf $WORKSPACE/archive/unziptmp
+#	zip -g -r $f system/
+#	if [[ -z $ZIPPASSCODE ]]; then
+		mv $f $WORKSPACE/archive/$targetf
+#	else
+#		zip -P $ZIPPASSCODE -j $WORKSPACE/archive/$targetf $f
+#	fi
+#	rm system -rf
+done
+for f in $(ls $OUT/*.zip.md5sum 2> /dev/null)
+do
+	targetf=`basename $f | sed "s/.zip$/-${BUILD_NO}.nwt/g"`
+	ln $f $WORKSPACE/archive/$targetf
+done
+if [ -f $OUT/boot.img ]
+then
+	cp $OUT/boot.img $WORKSPACE/archive
+	mkdir -p $WORKSPACE/archive/META-INF/com/google/android
+	wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/update-binary -O $WORKSPACE/archive/META-INF/com/google/android/update-binary
+	wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/updater-script -O $WORKSPACE/archive/META-INF/com/google/android/updater-script-tmp
+	cat $WORKSPACE/archive/META-INF/com/google/android/updater-script-tmp | sed -e "s/CWM Recovery/Boot/" | sed -e "s/Recovery/Boot/" | sed -e "s/recovery/boot/" | sed -e "s/mmcblk0p18/mmcblk0p7/" > $WORKSPACE/archive/META-INF/com/google/android/updater-script
+	rm -f $WORKSPACE/archive/META-INF/com/google/android/updater-script-tmp
+	cd $WORKSPACE/archive
+	zip boot.zip boot.img META-INF/com/google/android/*
+	rm -rf META-INF
+fi
+if [ -f $OUT/recovery.img ]
+then
+	cp $OUT/recovery.img $WORKSPACE/archive
+	mkdir -p $WORKSPACE/archive/META-INF/com/google/android
+	wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/update-binary -O $WORKSPACE/archive/META-INF/com/google/android/update-binary
+	wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/updater-script -O $WORKSPACE/archive/META-INF/com/google/android/updater-script
+	cd $WORKSPACE/archive
+	zip recovery.zip recovery.img META-INF/com/google/android/*
+	rm -rf META-INF
+fi
+
+#Verify permissions
+chmod -R ugo+r $WORKSPACE/archive
