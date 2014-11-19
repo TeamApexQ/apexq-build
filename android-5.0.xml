@@ -20,10 +20,10 @@
  <!--remove-project name="android_hardware_qcom_media" />
  <project name="lbdroid/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="android-5.0" /-->
 
- <remove-project name="android_hardware_libhardware_legacy" />
+ <!--remove-project name="android_hardware_libhardware_legacy" />
  <project name="CyanogenMod/android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="github" revision="cm-12.0" />
  <remove-project name="android_hardware_libhardware" />
- <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-12.0" />
+ <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-12.0" /-->
  
  <!-- CM seems to be a bit further along on the qcom/caf part -->
  <!--remove-project name="android_hardware_qcom_media" />
