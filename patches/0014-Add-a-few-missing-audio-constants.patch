@@ -1,0 +1,48 @@
+From 5caaabcdf8a1c8794524071989e24c3cbb6a243a Mon Sep 17 00:00:00 2001
+From: Adam <adam.s@dine.to>
+Date: Wed, 19 Nov 2014 15:49:44 -0500
+Subject: [PATCH] Add a few missing audio constants.
+
+---
+ include/system/audio.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/system/audio.h b/include/system/audio.h
+index c15abf7..5f7573c 100644
+--- a/include/system/audio.h
++++ b/include/system/audio.h
+@@ -288,10 +288,11 @@ typedef enum {
+     AUDIO_FORMAT_AMR_WB_PLUS         = 0x19000000UL,
+     AUDIO_FORMAT_MP2                 = 0x1A000000UL,
+     AUDIO_FORMAT_EVRCNW              = 0x1B000000UL,
++    AUDIO_FORMAT_EAC3		     = 0x1C000000UL,
+ #endif
+-    AUDIO_FORMAT_PCM_OFFLOAD         = 0x1C000000UL,
+-    AUDIO_FORMAT_FLAC                = 0x1D000000UL,
+-    AUDIO_FORMAT_E_AC3_JOC           = 0x1E000000UL,
++    AUDIO_FORMAT_PCM_OFFLOAD         = 0x1D000000UL,
++    AUDIO_FORMAT_FLAC                = 0x1E000000UL,
++    AUDIO_FORMAT_E_AC3_JOC           = 0x1F000000UL,
+     AUDIO_FORMAT_MAIN_MASK           = 0xFF000000UL,
+     AUDIO_FORMAT_SUB_MASK            = 0x00FFFFFFUL,
+ 
+@@ -676,6 +677,8 @@ enum {
+ #ifdef QCOM_HARDWARE
+     AUDIO_DEVICE_OUT_FM_TX                     = 0x1000000,
+     AUDIO_DEVICE_OUT_PROXY                     = 0x2000000,
++    AUDIO_DEVICE_OUT_ANC_HEADSET               = 0x4000000,
++    AUDIO_DEVICE_OUT_ANC_HEADPHONE             = 0x8000000,
+ #endif
+     AUDIO_DEVICE_OUT_DEFAULT                   = AUDIO_DEVICE_BIT_DEFAULT,
+     AUDIO_DEVICE_OUT_ALL      = (AUDIO_DEVICE_OUT_EARPIECE |
+@@ -746,6 +749,7 @@ enum {
+     AUDIO_DEVICE_IN_PROXY                 = AUDIO_DEVICE_BIT_IN | 0x100000,
+     AUDIO_DEVICE_IN_FM_RX                 = AUDIO_DEVICE_BIT_IN | 0x200000,
+     AUDIO_DEVICE_IN_FM_RX_A2DP            = AUDIO_DEVICE_BIT_IN | 0x400000,
++    AUDIO_DEVICE_IN_ANC_HEADSET           = AUDIO_DEVICE_BIT_IN | 0x800000,
+ #endif
+     AUDIO_DEVICE_IN_DEFAULT               = AUDIO_DEVICE_BIT_IN | AUDIO_DEVICE_BIT_DEFAULT,
+ 
+-- 
+1.9.3
+
