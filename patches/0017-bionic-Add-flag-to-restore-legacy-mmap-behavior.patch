@@ -1,0 +1,58 @@
+From 58135c062d15b881a96c755a17cd638378cbe784 Mon Sep 17 00:00:00 2001
+From: Flemmard <flemmard@gmail.com>
+Date: Thu, 13 Nov 2014 00:12:22 +0100
+Subject: [PATCH] bionic: Add flag to restore legacy mmap behavior
+
+* Pre-lollipop mmap would not care whether offset was signed
+  or unsigned.
+* Lollipop adds 64-bit support which results in sign extension
+  of offset, causing a negative offset when
+  a positive offset > 2^31 is given.
+
+Change-Id: I5d19d898fc131cf848217974915d1b466a474f99
+---
+ libc/Android.mk      | 4 ++++
+ libc/bionic/mmap.cpp | 7 ++++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/libc/Android.mk b/libc/Android.mk
+index 9c5e785..c6b8cee 100644
+--- a/libc/Android.mk
++++ b/libc/Android.mk
+@@ -532,6 +532,10 @@ ifneq ($(BOARD_MALLOC_ALIGNMENT),)
+   libc_common_cflags += -DMALLOC_ALIGNMENT=$(BOARD_MALLOC_ALIGNMENT)
+ endif
+ 
++ifeq ($(BOARD_USES_LEGACY_MMAP),true)
++  libc_common_cflags += -DLEGACY_MMAP
++endif
++
+ # Define ANDROID_SMP appropriately.
+ ifeq ($(TARGET_CPU_SMP),true)
+     libc_common_cflags += -DANDROID_SMP=1
+diff --git a/libc/bionic/mmap.cpp b/libc/bionic/mmap.cpp
+index 8f25a89..53e8b46 100644
+--- a/libc/bionic/mmap.cpp
++++ b/libc/bionic/mmap.cpp
+@@ -36,6 +36,11 @@
+ extern "C" void*  __mmap2(void*, size_t, int, int, int, size_t);
+ 
+ #define MMAP2_SHIFT 12 // 2**12 == 4096
++#ifdef LEGACY_MMAP
++#define TO_64(a) ((a) & 0x00000000ffffffff)
++#else
++#define TO_64(a) (a)
++#endif
+ 
+ static bool kernel_has_MADV_MERGEABLE = true;
+ 
+@@ -60,5 +65,5 @@ void* mmap64(void* addr, size_t size, int prot, int flags, int fd, off64_t offse
+ }
+ 
+ void* mmap(void* addr, size_t size, int prot, int flags, int fd, off_t offset) {
+-  return mmap64(addr, size, prot, flags, fd, static_cast<off64_t>(offset));
++  return mmap64(addr, size, prot, flags, fd, TO_64(static_cast<off64_t>(offset)));
+ }
+-- 
+1.9.3
+
