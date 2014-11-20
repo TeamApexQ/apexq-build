@@ -74,6 +74,15 @@ if [ ! -z "$PATCHES" ]; then
 	echo "done patching."
 fi
 
+#manual patch
+lpath=$PWD
+patchfile="0015-Revert-Update-policy-handling-for-USB-inputs.patch"
+cd hardware/libhardware_legacy
+wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/$BUILD_BRANCH/patches/$patchfile
+git am < $patchfile
+rm $patchfile
+cd "$lpath"
+
 #reverts
 lpath=$PWD
 for REVERT in $REVERTS; do
