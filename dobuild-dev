@@ -83,13 +83,6 @@ git revert --no-edit `echo $REVERT | cut -d\/ -f2` `echo $REVERT | cut -d\/ -f3`
 cd "$lpath"
 done
 
-#lets just manually revert this one for now...
-revpath="hardware/libhardware_legacy"
-lpath=$PWD
-cd $revpath
-git revert --no-edit fd61179b6483f1c6360968d0f9f7695ea6f380a7
-cd "$lpath"
-
 #Log
 wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
 WORKSPACE=$WORKSPACE sh $JOB_ROOT/bin/buildlog.sh 2>&1
