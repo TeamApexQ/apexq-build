@@ -75,17 +75,17 @@ if [ ! -z "$PATCHES" ]; then
 fi
 
 #manual patch
-lpath=$PWD
-patchfile="0015-Revert-Update-policy-handling-for-USB-inputs.patch"
-cd hardware/libhardware_legacy
-wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/$BUILD_BRANCH/patches/$patchfile
-git am < $patchfile
-rm $patchfile
-patchfile="0016-Add-missing-variables.patch"
-wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/$BUILD_BRANCH/patches/$patchfile
-git am < $patchfile
-rm $patchfile
-cd "$lpath"
+#lpath=$PWD
+#patchfile="0015-Revert-Update-policy-handling-for-USB-inputs.patch"
+#cd hardware/libhardware_legacy
+#wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/$BUILD_BRANCH/patches/$patchfile
+#git am < $patchfile
+#rm $patchfile
+#patchfile="0016-Add-missing-variables.patch"
+#wget https://raw.githubusercontent.com/TeamApexQ/apexq-build/$BUILD_BRANCH/patches/$patchfile
+#git am < $patchfile
+#rm $patchfile
+#cd "$lpath"
 
 #reverts
 lpath=$PWD
