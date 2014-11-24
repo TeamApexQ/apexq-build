@@ -96,6 +96,12 @@ git revert --no-edit `echo $REVERT | cut -d\/ -f2` `echo $REVERT | cut -d\/ -f3`
 cd "$lpath"
 done
 
+#manual file movements..... this is a really bad thing to do.
+rm bionic/libc/kernel/common -rf
+rm bionic/libc/kernel/arch-* -rf
+cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/arch-* bionic/libc/kernel/ -rfv
+cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/common bionic/libc/kernel/ -rfv
+
 #Log
 wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
 WORKSPACE=$WORKSPACE sh $JOB_ROOT/bin/buildlog.sh 2>&1
