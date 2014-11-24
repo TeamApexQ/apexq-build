@@ -16,8 +16,8 @@
  <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
  
  <!-- Custom media-caf disables dashplayer, which doesn't build at the moment -->
- <remove-project name="android_hardware_qcom_media" />
- <project name="lbdroid/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="android-5.0" />
+ <!--remove-project name="android_hardware_qcom_media" />
+ <project name="lbdroid/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="android-5.0" /-->
 
  <remove-project name="android_hardware_libhardware_legacy" />
  <project name="CyanogenMod/android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="github" revision="cm-12.0" />
@@ -25,11 +25,11 @@
  <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-12.0" /-->
  
  <!-- CM seems to be a bit further along on the qcom/caf part -->
- <!--remove-project name="android_hardware_qcom_media" />
+ <remove-project name="android_hardware_qcom_media" />
  <remove-project name="android_hardware_qcom_audio" />
  <remove-project name="android_hardware_qcom_display" />
- <project name="CyanogenMod/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="cm-12.0-caf-8960" />
- <project name="CyanogenMod/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="cm-12.0-caf-8960" />
+ <project name="TeamApexQ/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="cm-12.0-caf-8960" />
+ <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="cm-12.0-caf-8960" />
  <project name="TeamApexQ/android_hardware_qcom_display" path="hardware/qcom/display" remote="github" revision="cm-12.0-caf-8960" /-->
  
  <!-- AOSP dialer, no fancy features, but not broken either... -->
