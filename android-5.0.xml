@@ -34,8 +34,8 @@
  <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="cm-12.0-caf-8960" /-->
  <!--project name="TeamApexQ/android_hardware_qcom_display" path="hardware/qcom/display" remote="github" revision="cm-12.0-caf-8960" /-->
  
- <remove-project name="android_frameworks_native" />
- <project name="android_frameworks_native" path="frameworks/native" remote="omnirom" revision="android-5.0-caf" />
+ <!--remove-project name="android_frameworks_native" />
+ <project name="android_frameworks_native" path="frameworks/native" remote="omnirom" revision="android-5.0-caf" /-->
  
  <!--remove-project name="android_hardware_libhardware_legacy" />
  <project name="android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="omnirom" revision="android-4.4" /-->
