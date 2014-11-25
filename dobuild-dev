@@ -90,9 +90,9 @@ fi
 #reverts
 lpath=$PWD
 for REVERT in $REVERTS; do
-revpath=`echo $REVERT | cut -d\/ -f1 | sed -e "s/_/\//g"`
+revpath=`echo $REVERT | cut -d\: -f1`
 cd $revpath
-git revert --no-edit `echo $REVERT | cut -d\/ -f2` `echo $REVERT | cut -d\/ -f3`
+git revert --no-edit `echo $REVERT | cut -d\: -f2`
 cd "$lpath"
 done
 
