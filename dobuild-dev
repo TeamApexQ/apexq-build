@@ -110,11 +110,11 @@ chmod -R ugo+r $WORKSPACE/archive
 
 #Setup
 OUT=out/target/product/apexqtmo
-if [[ -z $LUNCH ]]; then
+#if [[ -z $LUNCH ]]; then
 cd vendor/cm
 ./get-prebuilts
 cd ../..
-fi
+#fi
 
 #CCACHE
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
