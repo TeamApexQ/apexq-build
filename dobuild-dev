@@ -130,7 +130,7 @@ export WITH_DEXPREOPT=true
 . ./build/envsetup.sh
 if [ $CLEAN = "true" ]; then make clean; fi
 if [[ -z $LUNCH ]]; then
-brunch apexqtmo
+nice $NICEOPTS brunch apexqtmo
 else
 lunch $LUNCH
 nice $NICEOPTS make $MAKETYPE $MAKEOPTS
