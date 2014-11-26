@@ -2,7 +2,7 @@
 
 #Global Default
 
-BUILD_BRANCH="aosp"
+BUILD_BRANCH="cm"
 
 if [[ -z $MAKETYPE ]]; then
   MAKETYPE="bacon"
@@ -17,7 +17,7 @@ rm -rf $JOB_ROOT/android/hudson
 rm -rf $JOB_ROOT/workspace/*
 
 #confirm existence of required paths
-if [ ! -d ~/.kk_ccache ]; then mkdir ~/.kk_ccache; fi
+if [ ! -d ~/.l_ccache ]; then mkdir ~/.l_ccache; fi
 if [ ! -d $JOB_ROOT/android/$BUILD_ROOT ]; then mkdir -p $JOB_ROOT/android/$BUILD_ROOT; fi
 if [ ! -d $JOB_ROOT/bin ]; then mkdir $JOB_ROOT/bin; fi
 if [ ! -d $WORKSPACE/archive ]; then mkdir $WORKSPACE/archive; fi
@@ -97,10 +97,10 @@ cd "$lpath"
 done
 
 #manual file movements..... this is a really bad thing to do.
-rm bionic/libc/kernel/common -rf
-rm bionic/libc/kernel/arch-* -rf
-cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/arch-* bionic/libc/kernel/ -rfv
-cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/common bionic/libc/kernel/ -rfv
+#rm bionic/libc/kernel/common -rf
+#rm bionic/libc/kernel/arch-* -rf
+#cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/arch-* bionic/libc/kernel/ -rfv
+#cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/common bionic/libc/kernel/ -rfv
 
 #Log
 wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
@@ -119,7 +119,7 @@ fi
 #CCACHE
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
 export USE_CCACHE=1
-export CCACHE_DIR=~/.kk_ccache
+export CCACHE_DIR=~/.l_ccache
 if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "50.0" ]
 then
 	ccache -M 50G
