@@ -9,7 +9,7 @@
  <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="omni-5.0-merge" />
 
  <!-- Blobz -->
- <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-11.0" />
+ <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-12.0" />
  
  <remove-project name="CyanogenMod/android_hardware_qcom_display" />
  <project name="lbdroid/android_hardware_qcom_display" path="hardware/qcom/display-caf/msm8960" remote="github" revision="cm-12.0-caf-8960" />
