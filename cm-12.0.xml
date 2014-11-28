@@ -14,7 +14,7 @@
  <remove-project name="CyanogenMod/android_hardware_qcom_display" />
  <project name="lbdroid/android_hardware_qcom_display" path="hardware/qcom/display-caf/msm8960" remote="github" revision="cm-12.0-caf-8960" />
  
- <remove-project name="Cyanogenmod/android_frameworks_base" />
+ <remove-project name="CyanogenMod/android_frameworks_base" />
  <project name="lbdroid/android_frameworks_base" path="frameworks/base" remote="github" revision="cm-12.0" />
  <remove-project name="CyanogenMod/android_frameworks_opt_telephony" />
  <project name="lbdroid/android_frameworks_opt_telephony" path="frameworks/opt/telephony" remote="github" revision="android-5.0" />
