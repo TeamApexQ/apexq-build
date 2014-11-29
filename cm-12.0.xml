@@ -18,4 +18,6 @@
  <project name="lbdroid/android_frameworks_base" path="frameworks/base" remote="github" revision="cm-12.0" />
  <remove-project name="CyanogenMod/android_frameworks_opt_telephony" />
  <project name="lbdroid/android_frameworks_opt_telephony" path="frameworks/opt/telephony" remote="github" revision="cm-12.0" />
+ <remove-project name="CyanogenMod/android_packages_apps_DeskClock" />
+ <project name="omnirom/android_packages_apps_DeskClock" path="packages/apps/DeskClock" remote="github" revision="android-5.0" />
 </manifest>
