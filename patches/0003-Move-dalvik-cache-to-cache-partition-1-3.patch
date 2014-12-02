@@ -16,17 +16,6 @@ index 3765759..2c1f6b8 100644
    return android_data;
  }
  
-+const char* GetAndroidCache() {
-+  std::string error_msg;
-+  const char* dir = GetAndroidCacheSafe(&error_msg);
-+  if (dir != nullptr) {
-+    return dir;
-+  } else {
-+    LOG(FATAL) << error_msg;
-+    return "";
-+  }
-+}
-+
 +const char* GetAndroidCacheSafe(std::string* error_msg) {
 +  const char* android_cache = getenv("ANDROID_CACHE");
 +  if (android_cache == NULL) {
@@ -42,6 +31,17 @@ index 3765759..2c1f6b8 100644
 +    return nullptr;
 +  }
 +  return android_cache;
++}
++
++const char* GetAndroidCache() {
++  std::string error_msg;
++  const char* dir = GetAndroidCacheSafe(&error_msg);
++  if (dir != nullptr) {
++    return dir;
++  } else {
++    LOG(FATAL) << error_msg;
++    return "";
++  }
 +}
 +
  void GetDalvikCache(const char* subdir, const bool create_if_absent, std::string* dalvik_cache,
