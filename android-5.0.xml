@@ -19,13 +19,13 @@
  <!--remove-project name="android_hardware_qcom_media" />
  <project name="lbdroid/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="android-5.0" /-->
 
- <remove-project name="android_hardware_libhardware_legacy" />
+ <!--remove-project name="android_hardware_libhardware_legacy" />
  <project name="CyanogenMod/android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="github" revision="cm-12.0" />
  <remove-project name="android_hardware_libhardware" />
- <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-12.0" />
+ <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-12.0" /-->
  
  <!-- CM seems to be a bit further along on the qcom/caf part -->
- <remove-project name="android_hardware_qcom_media-caf" />
+ <!--remove-project name="android_hardware_qcom_media-caf" />
  <remove-project name="android_hardware_qcom_audio-caf" />
  <remove-project name="android_hardware_qcom_display-caf" />
  <remove-project name="android_hardware_qcom_media" />
@@ -33,20 +33,20 @@
  <remove-project name="android_hardware_qcom_display" />
  <project name="TeamApexQ/android_hardware_qcom_audio" path="hardware/qcom/audio" remote="github" revision="cm-12.0-caf-8960" />
  <project name="TeamApexQ/android_hardware_qcom_display" path="hardware/qcom/display" remote="github" revision="cm-12.0-caf-8960" />
- <project name="TeamApexQ/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="cm-12.0-caf-8960" />
+ <project name="TeamApexQ/android_hardware_qcom_media" path="hardware/qcom/media" remote="github" revision="cm-12.0-caf-8960" /-->
 
  <!--project name="lbdroid/android_hardware_qcom_media-caf" path="hardware/qcom/media-caf" remote="github" revision="android-5.0" /-->
  <!--project name="lbdroid/android_hardware_qcom_audio-caf" path="hardware/qcom/audio-caf" remote="github" revision="android-5.0" /-->
  <!--remove-project name="android_hardware_qcom_audio" /-->
  
- <remove-project name="android_frameworks_native" />
+ <!--remove-project name="android_frameworks_native" /-->
  <!--project name="android_frameworks_native" path="frameworks/native" remote="omnirom" revision="android-5.0-caf" /-->
- <project name="CyanogenMod/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-12.0" />
+ <!--project name="CyanogenMod/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-12.0" /-->
  
  <!--remove-project name="android_hardware_libhardware_legacy" />
  <project name="android_hardware_libhardware_legacy" path="hardware/libhardware_legacy" remote="omnirom" revision="android-4.4" /-->
  
  <!-- AOSP dialer, no fancy features, but not broken either... -->
- <remove-project name="android_packages_apps_Dialer" />
- <project name="lbdroid/android_packages_apps_Dialer" path="packages/apps/Dialer" remote="github" revision="android-5.0" />
+ <!--remove-project name="android_packages_apps_Dialer" />
+ <project name="lbdroid/android_packages_apps_Dialer" path="packages/apps/Dialer" remote="github" revision="android-5.0" /-->
 </manifest>
