@@ -1,0 +1,85 @@
+From a62ee359b954f890654be33372f5b4429247d4d7 Mon Sep 17 00:00:00 2001
+From: Naseer Ahmed <naseer@codeaurora.org>
+Date: Tue, 25 Jun 2013 17:17:04 -0400
+Subject: [PATCH] hwc: Get the retire fence from the MDP driver
+
+Get the retire fence separately instead of duplicating the
+release fence.
+
+Bug: 9319776
+Change-Id: Iacb773c2d94f635e27a7b355d399cb2e36dac2a5
+Signed-off-by: Iliyan Malchev <malchev@google.com>
+Signed-off-by: Ethan Chen <intervigil@gmail.com>
+
+Conflicts:
+	common.mk
+---
+ common.mk                   |  4 ++++
+ libhwcomposer/hwc_utils.cpp | 17 +++++++++++++++--
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/common.mk b/common.mk
+index 57940e9..3a79d46 100644
+--- a/common.mk
++++ b/common.mk
+@@ -61,6 +61,10 @@ ifneq ($(TARGET_DISPLAY_INSECURE_MM_HEAP),true)
+     common_flags += -DSECURE_MM_HEAP
+ endif
+ 
++ifeq ($(TARGET_DISPLAY_USE_RETIRE_FENCE),true)
++    common_flags += -DUSE_RETIRE_FENCE
++endif
++
+ ifneq ($(filter msm7x30 msm8660,$(TARGET_BOARD_PLATFORM)),)
+     common_flags += -DNO_IOMMU
+ endif
+diff --git a/libhwcomposer/hwc_utils.cpp b/libhwcomposer/hwc_utils.cpp
+index d522768..67d208a 100644
+--- a/libhwcomposer/hwc_utils.cpp
++++ b/libhwcomposer/hwc_utils.cpp
+@@ -1011,6 +1011,9 @@ int hwc_sync(hwc_context_t *ctx, hwc_display_contents_1_t* list, int dpy,
+     int acquireFd[MAX_NUM_APP_LAYERS];
+     int count = 0;
+     int releaseFd = -1;
++#ifdef USE_RETIRE_FENCE
++    int retireFd = -1;
++#endif
+     int fbFd = -1;
+     int rotFd = -1;
+     bool swapzero = false;
+@@ -1025,6 +1028,9 @@ int hwc_sync(hwc_context_t *ctx, hwc_display_contents_1_t* list, int dpy,
+     }
+     data.acq_fen_fd = acquireFd;
+     data.rel_fen_fd = &releaseFd;
++#ifdef USE_RETIRE_FENCE
++    data.retire_fen_fd = &retireFd;
++#endif
+ 
+     char property[PROPERTY_VALUE_MAX];
+     if(property_get("debug.egl.swapinterval", property, "1") > 0) {
+@@ -1150,13 +1156,20 @@ int hwc_sync(hwc_context_t *ctx, hwc_display_contents_1_t* list, int dpy,
+         releaseFd = -1;
+     }
+ 
+-    if(UNLIKELY(swapzero)){
++#ifdef USE_RETIRE_FENCE
++    close(releaseFd);
++    if(UNLIKELY(swapzero))
++        list->retireFenceFd = -1;
++    else
++        list->retireFenceFd = retireFd;
++#else
++    if(UNLIKELY(swapzero)) {
+         list->retireFenceFd = -1;
+         close(releaseFd);
+     } else {
+         list->retireFenceFd = releaseFd;
+     }
+-
++#endif
+     return ret;
+ }
+ 
+-- 
+1.9.3
+
