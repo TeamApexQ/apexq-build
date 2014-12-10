@@ -27,4 +27,8 @@
  <remove-project name="android_system_core" />
  <project name="lbdroid/android_system_core" path="system/core" remote="github" revision="android-5.0" />
  
+ <!-- hardware/libhardware CAF LA.AF.1.1 -->
+ <remove-project name="android_hardware_libhardware" />
+ <project name="lbdroid/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="android-5.0" />
+ 
  </manifest>
