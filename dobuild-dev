@@ -101,6 +101,7 @@ done
 #rm bionic/libc/kernel/arch-* -rf
 #cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/arch-* bionic/libc/kernel/ -rfv
 #cp /var/lib/jenkins/jobs/apexq-staging-omni/android/omni/bionic/libc/kernel/common bionic/libc/kernel/ -rfv
+cp /var/lib/jenkins/jobs/apexq-cm-12.0/android/cm/device/samsung/apexqtmo/include/hardware/gps.h /var/lib/jenkins/jobs/apexq-cm-12.0/android/cm/hardware/libhardware/include/hardware/ -fv
 
 #Log
 wget https://raw.github.com/TeamApexQ/apexq-build/$BUILD_BRANCH/buildlog.sh -O $JOB_ROOT/bin/buildlog.sh
