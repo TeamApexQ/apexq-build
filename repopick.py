@@ -33,4 +33,4 @@ for change in sys.argv[1:]:
         patch_count = patch_count + 1
 
     os.system('cd %s ; git fetch http://review.cyanogenmod.com/%s refs/changes/%s/%s/%s' % (project, data['project'], junk, number, patch_count))
-    os.system('cd %s ; git merge FETCH_HEAD' % project)
+    os.system('cd %s ; git merge --no-edit FETCH_HEAD' % project)
