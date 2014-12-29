@@ -12,5 +12,5 @@
  <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-12.0" />
  
  <!-- openssh -->
- <project name="lbdroid/android_external_openssh" path="external/openssh" remote="github" revision="cm-12.0" /-->
+ <project name="lbdroid/android_external_openssh" path="external/openssh" remote="github" revision="cm-12.0" />
 </manifest>
