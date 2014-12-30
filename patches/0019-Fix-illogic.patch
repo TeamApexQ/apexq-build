@@ -1,0 +1,26 @@
+From d47eb5d91aa6e1a0da5d6e277cddd2a35d0baed4 Mon Sep 17 00:00:00 2001
+From: lbdroid <lbdroid@users.noreply.github.com>
+Date: Tue, 30 Dec 2014 12:33:04 -0500
+Subject: [PATCH] Fix illogic
+
+This was pretty bad. The variable 'mShowImeWithHardKeyboard' was renamed from 'mHardKeyboardEnabled', and the logic inverted such that the IME will *always* show with the hard keyboard presence.
+---
+ services/core/java/com/android/server/wm/WindowManagerService.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/wm/WindowManagerService.java b/services/core/java/com/android/server/wm/WindowManagerService.java
+index e9e0fd1..e15e686 100644
+--- a/services/core/java/com/android/server/wm/WindowManagerService.java
++++ b/services/core/java/com/android/server/wm/WindowManagerService.java
+@@ -7237,7 +7237,7 @@ public class WindowManagerService extends IWindowManager.Stub
+                 mH.removeMessages(H.REPORT_HARD_KEYBOARD_STATUS_CHANGE);
+                 mH.sendEmptyMessage(H.REPORT_HARD_KEYBOARD_STATUS_CHANGE);
+             }
+-            if (mShowImeWithHardKeyboard) {
++            if (false){//mShowImeWithHardKeyboard) {
+                 config.keyboard = Configuration.KEYBOARD_NOKEYS;
+             }
+ 
+-- 
+1.8.3.1
+
