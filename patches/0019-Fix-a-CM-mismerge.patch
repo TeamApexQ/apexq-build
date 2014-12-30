@@ -1,0 +1,25 @@
+From 6813147fe7adc4e4718d0efdc565c075c2714839 Mon Sep 17 00:00:00 2001
+From: lbdroid <definesinsanity@gmail.com>
+Date: Tue, 30 Dec 2014 13:14:02 -0500
+Subject: [PATCH] Fix a CM mismerge
+
+Somebody thought that this change was a variable being renamed. It was actually different functionality altogether. The end result of the mismerge was to always show the IME whenever any hard keyboard is present, which is nearly opposite from the behavior that we actually want. Pulling out the line that sets the variable to the same as the presence of hard keyboard brings this more inline with the actual source found in AOSP.
+---
+ services/core/java/com/android/server/wm/WindowManagerService.java | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/wm/WindowManagerService.java b/services/core/java/com/android/server/wm/WindowManagerService.java
+index e9e0fd1..13ddc4b 100644
+--- a/services/core/java/com/android/server/wm/WindowManagerService.java
++++ b/services/core/java/com/android/server/wm/WindowManagerService.java
+@@ -7233,7 +7233,6 @@ public class WindowManagerService extends IWindowManager.Stub
+             }
+             if (hardKeyboardAvailable != mHardKeyboardAvailable) {
+                 mHardKeyboardAvailable = hardKeyboardAvailable;
+-                mShowImeWithHardKeyboard = hardKeyboardAvailable;
+                 mH.removeMessages(H.REPORT_HARD_KEYBOARD_STATUS_CHANGE);
+                 mH.sendEmptyMessage(H.REPORT_HARD_KEYBOARD_STATUS_CHANGE);
+             }
+-- 
+1.8.3.1
+
