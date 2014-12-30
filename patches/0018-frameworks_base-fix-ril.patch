@@ -1,0 +1,138 @@
+From f2faecd3549f8240f6cab38563c69364b3780399 Mon Sep 17 00:00:00 2001
+From: lbdroid <lbdroid@users.noreply.github.com>
+Date: Thu, 27 Nov 2014 18:12:18 -0500
+Subject: [PATCH 1/3] Frameworks hack 1/3
+
+---
+ core/java/android/net/ConnectivityManager.java | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/core/java/android/net/ConnectivityManager.java b/core/java/android/net/ConnectivityManager.java
+index b96cf55..5ca44db 100644
+--- a/core/java/android/net/ConnectivityManager.java
++++ b/core/java/android/net/ConnectivityManager.java
+@@ -1402,6 +1402,20 @@ public class ConnectivityManager {
+         return false;
+     }
+ 
++     /**
++     * Sets the persisted value for enabling/disabling Mobile data.
++     *
++     * @param enabled Whether the user wants the mobile data connection used
++     *            or not.
++     * @hide
++     */
++    public void setMobileDataEnabled(boolean enabled) {
++        try {
++            mService.setMobileDataEnabled(enabled);
++        } catch (RemoteException e) {
++        }
++    }
++
+     /**
+      * Callback for use with {@link ConnectivityManager#addDefaultNetworkActiveListener}
+      * to find out when the system default network has gone in to a high power state.
+-- 
+1.8.3.1
+
+
+From e383a26a74321043bb6d4c0665c51c1d4b7560f9 Mon Sep 17 00:00:00 2001
+From: lbdroid <lbdroid@users.noreply.github.com>
+Date: Thu, 27 Nov 2014 18:13:11 -0500
+Subject: [PATCH 2/3] Frameworks hack 2/3
+
+---
+ core/java/android/net/IConnectivityManager.aidl | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/core/java/android/net/IConnectivityManager.aidl b/core/java/android/net/IConnectivityManager.aidl
+index a349105..50808ee 100644
+--- a/core/java/android/net/IConnectivityManager.aidl
++++ b/core/java/android/net/IConnectivityManager.aidl
+@@ -74,6 +74,8 @@ interface IConnectivityManager
+     /** Policy control over specific {@link NetworkStateTracker}. */
+     void setPolicyDataEnable(int networkType, boolean enabled);
+ 
++    void setMobileDataEnabled(boolean enabled);
++
+     int tether(String iface);
+ 
+     int untether(String iface);
+-- 
+1.8.3.1
+
+
+From d44c7f0fa6f62aac65e6edb679e4a8c127577727 Mon Sep 17 00:00:00 2001
+From: lbdroid <lbdroid@users.noreply.github.com>
+Date: Thu, 27 Nov 2014 18:16:00 -0500
+Subject: [PATCH 3/3] Frameworks hack 3/3
+
+---
+ .../com/android/server/ConnectivityService.java    | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/services/core/java/com/android/server/ConnectivityService.java b/services/core/java/com/android/server/ConnectivityService.java
+index 3e2f561..7fca543 100644
+--- a/services/core/java/com/android/server/ConnectivityService.java
++++ b/services/core/java/com/android/server/ConnectivityService.java
+@@ -290,6 +290,12 @@ public class ConnectivityService extends IConnectivityManager.Stub {
+     private static final int EVENT_CHANGE_MOBILE_DATA_ENABLED = 2;
+ 
+     /**
++     * used internally to set enable/disable cellular data
++     * arg1 = ENBALED or DISABLED
++     */
++    private static final int EVENT_SET_MOBILE_DATA = 7;
++
++    /**
+      * used internally to clear a wakelock when transitioning
+      * from one net to another.  Clear happens when we get a new
+      * network - EVENT_EXPIRE_NET_TRANSITION_WAKELOCK happens
+@@ -1336,6 +1342,32 @@ public class ConnectivityService extends IConnectivityManager.Stub {
+         }
+     };
+ 
++    /**
++     * @see ConnectivityManager#setMobileDataEnabled(boolean)
++     */
++    public void setMobileDataEnabled(boolean enabled) {
++        enforceChangePermission();
++        if (DBG) log("setMobileDataEnabled(" + enabled + ")");
++
++        mHandler.sendMessage(mHandler.obtainMessage(EVENT_SET_MOBILE_DATA,
++                (enabled ? ENABLED : DISABLED), 0));
++    }
++
++    private void handleSetMobileData(boolean enabled) {
++        if (mNetTrackers[ConnectivityManager.TYPE_MOBILE] != null) {
++            if (VDBG) {
++                log(mNetTrackers[ConnectivityManager.TYPE_MOBILE].toString() + enabled);
++            }
++            mNetTrackers[ConnectivityManager.TYPE_MOBILE].setUserDataEnable(enabled);
++        }
++        if (mNetTrackers[ConnectivityManager.TYPE_WIMAX] != null) {
++            if (VDBG) {
++                log(mNetTrackers[ConnectivityManager.TYPE_WIMAX].toString() + enabled);
++            }
++            mNetTrackers[ConnectivityManager.TYPE_WIMAX].setUserDataEnable(enabled);
++        }
++    }
++
+     @Override
+     public void setPolicyDataEnable(int networkType, boolean enabled) {
+         // only someone like NPMS should only be calling us
+@@ -2331,6 +2363,11 @@ public class ConnectivityService extends IConnectivityManager.Stub {
+                     sendStickyBroadcast(intent);
+                     break;
+                 }
++                case EVENT_SET_MOBILE_DATA: {
++                    boolean enabled = (msg.arg1 == ENABLED);
++                    handleSetMobileData(enabled);
++                    break;
++                }
+                 case EVENT_SET_POLICY_DATA_ENABLE: {
+                     final int networkType = msg.arg1;
+                     final boolean enabled = msg.arg2 == ENABLED;
+-- 
+1.8.3.1
+
