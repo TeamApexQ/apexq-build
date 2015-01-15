@@ -1,0 +1,27 @@
+From f00077ff1305fae61d0e20da9a03e4c38b2eb877 Mon Sep 17 00:00:00 2001
+From: lbdroid <definesinsanity@gmail.com>
+Date: Thu, 15 Jan 2015 09:23:35 -0500
+Subject: [PATCH] AppOps: Enable permission blocking on system signed
+ applications
+
+It is bad policy to allow an untrusted system to run amok. This was initially enabled with an excuse of preventing the end user from doing harm to themselves, but it is well known that those responsible for building this "system" are not entirely trustworthy. If the user harms themselves, they can revert the change they made in order to restore normal behavior. Being platform signed does NOT make the code trusted.
+---
+ src/com/android/settings/applications/AppOpsDetails.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/com/android/settings/applications/AppOpsDetails.java b/src/com/android/settings/applications/AppOpsDetails.java
+index 8a9b7c3..0f67958 100644
+--- a/src/com/android/settings/applications/AppOpsDetails.java
++++ b/src/com/android/settings/applications/AppOpsDetails.java
+@@ -150,7 +150,7 @@ public class AppOpsDetails extends Fragment {
+ 
+         mOperationsSection.removeAllViews();
+         String lastPermGroup = "";
+-        boolean isPlatformSigned = isPlatformSigned();
++        boolean isPlatformSigned = false;
+         for (AppOpsState.OpsTemplate tpl : AppOpsState.ALL_TEMPLATES) {
+             /* If we are platform signed, only show the root switch, this
+              * one is safe to toggle while other permission-based ones could
+-- 
+1.8.3.1
+
