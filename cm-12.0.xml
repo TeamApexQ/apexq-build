@@ -6,7 +6,7 @@
  <project name="TeamApexQ/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-12.0" />
 
  <!-- Kernel -->
- <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="omni-5.0-voltexp" />
+ <project name="TeamApexQ/android_kernel_samsung_d2" path="kernel/samsung/d2" remote="github" revision="omni-5.0" />
 
  <!-- Blobz -->
  <project name="TeamApexQ/proprietary_vendor_samsung" path="vendor/samsung" remote="github" revision="cm-12.0" />
