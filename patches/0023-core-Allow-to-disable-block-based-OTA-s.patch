@@ -1,0 +1,39 @@
+From 6cda2886cb1a4b3ca49c4b5e3544726cdcb26731 Mon Sep 17 00:00:00 2001
+From: M1cha <sigmaepsilon92@gmail.com>
+Date: Thu, 20 Nov 2014 08:31:33 +0100
+Subject: [PATCH] core: Allow to disable block based OTA's
+
+on Xiaomi Mi2, it causes that the user can't install GAPPS because
+the filesystem is smaller than the partition then(users resize the syspart).
+
+Change-Id: I1dcde9c9a212c34108629537cb8c1088a0373573
+---
+ core/Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/core/Makefile b/core/Makefile
+index c1ad7dd..76ab281 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -1654,13 +1654,17 @@ ifneq ($(TARGET_UNIFIED_DEVICE),)
+     endif
+ endif
+ 
++ifneq ($(TARGET_USES_BLOCK_BASED_OTA),false)
++    $(INTERNAL_OTA_PACKAGE_TARGET): block_ota := --block
++endif
++
+ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
+ 	@echo "$(OTA_FROM_TARGET_SCRIPT)" > $(PRODUCT_OUT)/ota_script_path
+ 	@echo "$(override_device)" > $(PRODUCT_OUT)/ota_override_device
+ 	@echo -e ${CL_YLW}"Package OTA:"${CL_RST}" $@"
+ 	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
+ 	   $(OTA_FROM_TARGET_SCRIPT) -v \
+-	   --block \
++	   $(block_ota) \
+ 	   -p $(HOST_OUT) \
+ 	   -k $(KEY_CERT_PAIR) \
+ 	   --backup=$(backuptool) \
+-- 
+1.9.1
+
