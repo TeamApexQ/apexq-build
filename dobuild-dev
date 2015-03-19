@@ -2,7 +2,7 @@
 
 #Global Default
 
-BUILD_BRANCH="cm"
+BUILD_BRANCH="cm-newkernel"
 
 if [[ -z $MAKETYPE ]]; then
   MAKETYPE="bacon"
