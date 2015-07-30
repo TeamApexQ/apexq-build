@@ -13,4 +13,6 @@
 
   <!-- CAF frameworks -->
  <project name="android_frameworks_av" path="frameworks/av-caf" remote="omnirom" revision="android-5.1-caf" />
+ <remove-project name="android_frameworks_native" />
+ <project name="android_frameworks_native" path="frameworks/native" remote="omnirom" revision="android-5.1-caf" />
 </manifest>
