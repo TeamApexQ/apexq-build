@@ -1,14 +1,27 @@
-From 5a99b192f93fef83bb6dd1826c489ab902d61257 Mon Sep 17 00:00:00 2001
+From b60cfe9a9955abb04d0a43531d03b6561c04c87d Mon Sep 17 00:00:00 2001
 From: Malcolm Mallardi <mdmallardi@gmail.com>
-Date: Thu, 30 Jul 2015 18:20:15 -0400
-Subject: [PATCH 2/2] Add include/camera/CameraParametersExtra.h
+Date: Thu, 30 Jul 2015 18:30:06 -0400
+Subject: [PATCH] Add CameraParametersExtra.h
 
-Change-Id: I0d0cef7e5c8e8d166d963432624a0287dd1392b5
+Change-Id: I0cb7393482183470e8d4a7861e638c8a75028648
 ---
+ camera/CameraParameters.cpp            |   1 +
  include/camera/CameraParametersExtra.h | 215 +++++++++++++++++++++++++++++++++
- 1 file changed, 215 insertions(+)
+ 2 files changed, 216 insertions(+)
  create mode 100644 include/camera/CameraParametersExtra.h
 
+diff --git a/camera/CameraParameters.cpp b/camera/CameraParameters.cpp
+index 846ffb5..ac614a5 100644
+--- a/camera/CameraParameters.cpp
++++ b/camera/CameraParameters.cpp
+@@ -21,6 +21,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <camera/CameraParameters.h>
++#include <camera/CameraParametersExtra.h>
+ #include <system/graphics.h>
+ 
+ namespace android {
 diff --git a/include/camera/CameraParametersExtra.h b/include/camera/CameraParametersExtra.h
 new file mode 100644
 index 0000000..563095f
