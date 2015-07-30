@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
  <!-- Device -->
- <project name="TeamApexQ/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="cm-12.0" />
+ <project name="TeamApexQ/android_device_samsung_apexqtmo" path="device/samsung/apexqtmo" remote="github" revision="omni-5.1" />
  <project name="TeamApexQ/android_device_samsung_msm8960-common" path="device/samsung/msm8960-common" remote="github" revision="omni-5.0" />
  <project name="TeamApexQ/android_device_samsung_qcom-common" path="device/samsung/qcom-common" remote="github" revision="cm-12.0" />
 
